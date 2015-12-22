@@ -14,23 +14,27 @@ import java.util.ArrayList;
 
 public class BreakoutGame implements Game {
     private Frame frame;
-    protected CanvasDefaultImpl canvas;
+    private CanvasDefaultImpl canvas;
+    private int width;
+    private int height;
 
-    protected ArrayList<GameLevel> gameLevels;
+    private ArrayList<GameLevel> gameLevels;
     private GameLevelDefaultImpl currentPlayedLevel = null;
-    protected int levelNumber;
+    private int levelNumber;
 
+    public BreakoutGame(int w, int h) {
+        width = w;
+        height = h;
 
-    public BreakoutGame() {
         createGUI();
     }
 
     @Override
     public void createGUI() {
-        frame = new Frame("Breakout");
+        frame = new Frame("Firewall Breaker");
         canvas = new CanvasDefaultImpl();
 
-        canvas.setSize(640, 480);
+        canvas.setSize(width, height);
         frame.add(canvas);
         frame.pack();
         frame.setVisible(true);

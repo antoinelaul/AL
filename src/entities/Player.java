@@ -1,4 +1,4 @@
-package models;
+package entities;
 
 
 import gameframework.base.Drawable;
@@ -6,6 +6,8 @@ import gameframework.base.DrawableImage;
 import gameframework.base.Overlappable;
 import gameframework.game.GameEntity;
 import gameframework.game.GameMovable;
+import gameframework.game.SpriteManager;
+import gameframework.game.SpriteManagerDefaultImpl;
 
 import java.awt.*;
 
@@ -13,12 +15,12 @@ import java.awt.*;
 public class Player extends GameMovable implements Drawable, GameEntity, Overlappable {
     protected static DrawableImage image;
 
-    public static final int RENDERING_WIDTH = 32;
+    public static final int RENDERING_WIDTH = 64;
     public static final int RENDERING_HEIGHT = 16;
 
 
-    public Player(Canvas defaultCanvas) {
-        image = new DrawableImage("assets/images/player.png", defaultCanvas);
+    public Player(Canvas canvas) {
+        image = new DrawableImage("assets/images/player.png", canvas);
     }
 
     @Override
