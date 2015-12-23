@@ -7,20 +7,20 @@ import gameframework.game.MoveBlocker;
 
 import java.awt.*;
 
-public class InvisibleWall implements Drawable, MoveBlocker, GameEntity {
-    protected static DrawableImage image = null;
+public class InvisibleWall implements MoveBlocker, GameEntity {
     int x, y;
 	int width;
-	int height;
+    int height;
+    boolean hztl;
 
 
-	public InvisibleWall(Canvas canvas, int _x, int _y, int w, int h) {
-        image = new DrawableImage("assets/images/wall.gif", canvas);
-
+	public InvisibleWall(int _x, int _y, int w, int h, boolean hztl) {
         x = _x;
 		y = _y;
 		width = w;
 		height = h;
+
+        this.hztl = hztl;
 	}
 
 	public Point getPos() {
@@ -28,12 +28,10 @@ public class InvisibleWall implements Drawable, MoveBlocker, GameEntity {
 	}
 
 	public Rectangle getBoundingBox() {
-        System.out.println("truc");
         return (new Rectangle(x, y, width, height));
 	}
 
-    @Override
-    public void draw(Graphics g) {
-        g.drawImage(image.getImage(), x, y, width, height, null);
+    public boolean isHztl() {
+        return hztl;
     }
 }

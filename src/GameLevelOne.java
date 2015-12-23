@@ -1,6 +1,10 @@
 import controllers.BreakoutOverlapRules;
+import entities.Ball;
 import entities.InvisibleWall;
+import gameframework.base.MoveStrategyStraightLine;
+import models.BallMoveBlocker;
 import models.BreakoutUniverseViewPort;
+import models.MoveStrategyBall;
 import models.MoveStrategyHorizontal;
 import entities.Player;
 
@@ -26,6 +30,7 @@ public class GameLevelOne extends GameLevelDefaultImpl {
     protected void init() {
         OverlapProcessor overlapProcessor = new OverlapProcessorDefaultImpl();
         MoveBlockerChecker moveBlockerChecker = new MoveBlockerCheckerDefaultImpl();
+        moveBlockerChecker.setMoveBlockerRules(new BallMoveBlocker());
 
         BreakoutOverlapRules overlapRules = new BreakoutOverlapRules();
         overlapProcessor.setOverlapRules(overlapRules);
@@ -37,20 +42,32 @@ public class GameLevelOne extends GameLevelDefaultImpl {
         ((CanvasDefaultImpl) canvas).setDrawingGameBoard(gameBoard);
 
         // Borders.
-        universe.addGameEntity(new InvisibleWall(canvas, 0, 0, 10, height));
-        universe.addGameEntity(new InvisibleWall(canvas, width - 10, 0, 10, height));
-        universe.addGameEntity(new InvisibleWall(canvas, 0, 0, width, 10));
+        universe.addGameEntity(new InvisibleWall(-10, 0, 10, height, false));
+        universe.addGameEntity(new InvisibleWall(width, 0, 10, height, false));
+        universe.addGameEntity(new InvisibleWall(0, -10, width, 10, true));
 
-        // Player and strategy.
+        // Player configuration.
         Player player = new Player(canvas);
 
-        GameMovableDriverDefaultImpl driver = new GameMovableDriverDefaultImpl();
+        GameMovableDriverDefaultImpl pdriver = new GameMovableDriverDefaultImpl();
         MoveStrategyHorizontal keyStr = new MoveStrategyHorizontal();
-        driver.setStrategy(keyStr);
+        pdriver.setStrategy(keyStr);
+        pdriver.setmoveBlockerChecker(moveBlockerChecker);
         player.setPosition(new Point(width / 2,  height - 16));
 
         canvas.addKeyListener(keyStr);
-        player.setDriver(driver);
+        player.setDriver(pdriver);
         universe.addGameEntity(player);
+
+        // Ball configuration.
+        Ball ball = new Ball(canvas);
+        GameMovableDriverDefaultImpl bdriver = new GameMovableDriverDefaultImpl();
+        MoveStrategyBall ballStr = new MoveStrategyBall(2, 1);
+        bdriver.setStrategy(ballStr);
+        bdriver.setmoveBlockerChecker(moveBlockerChecker);
+
+        ball.setPosition(new Point(width / 2, height / 2));
+        ball.setDriver(bdriver);
+        universe.addGameEntity(ball);
     }
 }

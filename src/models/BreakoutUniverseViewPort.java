@@ -13,6 +13,6 @@ public class BreakoutUniverseViewPort extends GameUniverseViewPortDefaultImpl {
 
     @Override
     protected String backgroundImage() {
-        return "assets/images/background_image.gif";
+        return "assets/images/back.jpg";
     }
 }
