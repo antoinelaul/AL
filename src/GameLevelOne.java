@@ -1,5 +1,7 @@
 import controllers.BreakoutOverlapRules;
 import entities.Ball;
+import entities.BreakableWall;
+import entities.UnbreakableWall;
 import entities.InvisibleWall;
 import gameframework.base.MoveStrategyStraightLine;
 import models.BallMoveBlocker;
@@ -7,67 +9,121 @@ import models.BreakoutUniverseViewPort;
 import models.MoveStrategyBall;
 import models.MoveStrategyHorizontal;
 import entities.Player;
-
 import gameframework.game.*;
 
 import java.awt.*;
 
 
+
 public class GameLevelOne extends GameLevelDefaultImpl {
-    private Canvas canvas;
-    private int width;
-    private int height;
+	private Canvas canvas;
+	private int width;
+	private int height;
 
-    public GameLevelOne(Game g, int w, int h) {
-        super(g);
+	static int[][] tab = {
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0 },
+		{ 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0 },
+		{ 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0 },
+		{ 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0 },
+		{ 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 2, 2, 2, 0, 0, 2, 2, 2, 0, 2, 2, 2, 0, 2, 2, 0, 0, 2, 2, 2, 0, 0, 2, 0, 0, 2, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0 },
+		{ 0, 2, 0, 2, 0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0 },
+		{ 0, 2, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 2, 0, 0, 2, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 0, 2, 0, 2, 0, 0, 0, 2, 2, 2, 0, 2, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0 },
+		{ 0, 2, 2, 2, 2, 0, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 0, 0, 2, 2, 2, 0, 2, 0, 2, 0, 2, 2, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }};
 
-        width = w;
-        height = h;
-        canvas = g.getCanvas();
-    }
 
-    @Override
-    protected void init() {
-        OverlapProcessor overlapProcessor = new OverlapProcessorDefaultImpl();
-        MoveBlockerChecker moveBlockerChecker = new MoveBlockerCheckerDefaultImpl();
-        moveBlockerChecker.setMoveBlockerRules(new BallMoveBlocker());
+	public static final int SPRITE_SIZE = 16;
 
-        BreakoutOverlapRules overlapRules = new BreakoutOverlapRules();
-        overlapProcessor.setOverlapRules(overlapRules);
+	public GameLevelOne(Game g, int w, int h) {
+		super(g);
 
-        universe = new GameUniverseDefaultImpl(moveBlockerChecker, overlapProcessor);
-        overlapRules.setUniverse(universe);
+		width = w;
+		height = h;
+		canvas = g.getCanvas();
+	}
 
-        gameBoard = new BreakoutUniverseViewPort(canvas, universe);
-        ((CanvasDefaultImpl) canvas).setDrawingGameBoard(gameBoard);
 
-        // Borders.
-        universe.addGameEntity(new InvisibleWall(-10, 0, 10, height, false));
-        universe.addGameEntity(new InvisibleWall(width, 0, 10, height, false));
-        universe.addGameEntity(new InvisibleWall(0, -10, width, 10, true));
+	@Override
+	protected void init() {
+		OverlapProcessor overlapProcessor = new OverlapProcessorDefaultImpl();
+		MoveBlockerChecker moveBlockerChecker = new MoveBlockerCheckerDefaultImpl();
+		moveBlockerChecker.setMoveBlockerRules(new BallMoveBlocker());
 
-        // Player configuration.
-        Player player = new Player(canvas);
+		BreakoutOverlapRules overlapRules = new BreakoutOverlapRules(endOfGame);
+		overlapProcessor.setOverlapRules(overlapRules);
 
-        GameMovableDriverDefaultImpl pdriver = new GameMovableDriverDefaultImpl();
-        MoveStrategyHorizontal keyStr = new MoveStrategyHorizontal();
-        pdriver.setStrategy(keyStr);
-        pdriver.setmoveBlockerChecker(moveBlockerChecker);
-        player.setPosition(new Point(width / 2,  height - 16));
+		universe = new GameUniverseDefaultImpl(moveBlockerChecker, overlapProcessor);
+		overlapRules.setUniverse(universe);
 
-        canvas.addKeyListener(keyStr);
-        player.setDriver(pdriver);
-        universe.addGameEntity(player);
+		gameBoard = new BreakoutUniverseViewPort(canvas, universe);
+		((CanvasDefaultImpl) canvas).setDrawingGameBoard(gameBoard);
 
-        // Ball configuration.
-        Ball ball = new Ball(canvas);
-        GameMovableDriverDefaultImpl bdriver = new GameMovableDriverDefaultImpl();
-        MoveStrategyBall ballStr = new MoveStrategyBall(2, 1);
-        bdriver.setStrategy(ballStr);
-        bdriver.setmoveBlockerChecker(moveBlockerChecker);
+		
+		int totalBreakableWalls = 0;
+		// Filling up the universe with basic non movable entities and inclusion in the universe
+		for (int i = 0; i < 32; ++i) {
+			for (int j = 0; j < 41; ++j) {
+				if (tab[i][j] == 1) {
+					universe.addGameEntity(new UnbreakableWall(canvas, j * SPRITE_SIZE, i * SPRITE_SIZE, 16, 16));
+				}
+				if(tab[i][j] == 2) {
+					universe.addGameEntity(new BreakableWall(canvas, j * SPRITE_SIZE, i * SPRITE_SIZE, 16, 16));
+					totalBreakableWalls++;
+				}
+			}
+		}
+		overlapRules.setTotalBreakableWalls(totalBreakableWalls);
 
-        ball.setPosition(new Point(width / 2, height / 2));
-        ball.setDriver(bdriver);
-        universe.addGameEntity(ball);
-    }
+		// Borders.
+		universe.addGameEntity(new InvisibleWall(-10, 0, 10, height, false));
+		universe.addGameEntity(new InvisibleWall(width, 0, 10, height, false));
+		universe.addGameEntity(new InvisibleWall(0, -10, width, 10, true));
+
+		// Player configuration.
+		Player player = new Player(canvas);
+
+		GameMovableDriverDefaultImpl pdriver = new GameMovableDriverDefaultImpl();
+		MoveStrategyHorizontal keyStr = new MoveStrategyHorizontal();
+		pdriver.setStrategy(keyStr);
+		pdriver.setmoveBlockerChecker(moveBlockerChecker);
+		player.setPosition(new Point(width / 2,  height - 16));
+
+		canvas.addKeyListener(keyStr);
+		player.setDriver(pdriver);
+		universe.addGameEntity(player);
+
+		// Ball configuration.
+		Ball ball = new Ball(canvas);
+		GameMovableDriverDefaultImpl bdriver = new GameMovableDriverDefaultImpl();
+		MoveStrategyBall ballStr = new MoveStrategyBall(2, 1);
+		bdriver.setStrategy(ballStr);
+		bdriver.setmoveBlockerChecker(moveBlockerChecker);
+
+		ball.setPosition(new Point(width / 2, height - 15));
+		ball.setDriver(bdriver);
+		universe.addGameEntity(ball);
+	}
 }

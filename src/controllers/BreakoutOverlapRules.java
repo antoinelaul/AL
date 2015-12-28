@@ -1,7 +1,10 @@
 package controllers;
 
 import entities.Ball;
+import entities.BreakableWall;
 import entities.Player;
+import entities.UnbreakableWall;
+import gameframework.base.ObservableValue;
 import gameframework.base.SpeedVector;
 import gameframework.game.GameMovableDriverDefaultImpl;
 import gameframework.game.GameUniverse;
@@ -11,9 +14,21 @@ import models.MoveStrategyBall;
 import java.awt.*;
 
 
+
 public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
     protected GameUniverse universe;
+    private int totalBreakableWalls = 0;
+	private int wallBroken = 0;
+	private final ObservableValue<Boolean> endOfGame;
 
+	public BreakoutOverlapRules(ObservableValue<Boolean> eof) {
+		this.endOfGame = eof;
+	}
+	
+	public void setTotalBreakableWalls(int totalBkw) {
+		this.totalBreakableWalls = totalBkw;
+	}
+	
     @Override
     public void setUniverse(GameUniverse universe) {
         this.universe = universe;
@@ -35,5 +50,21 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
 
         ball.setPosition(new Point(bpp.x, ppp.y - pbb.height));
     }
+    
+    public void overlapRule(Ball ball, BreakableWall bkw) {
+    	universe.removeGameEntity(bkw);
+    	wallBrokenHandler();
+	}
+    
+    public void overlapRule(Ball ball, UnbreakableWall unbkw){
+    }
+    
+    private void wallBrokenHandler() {
+		wallBroken++;
+		if (wallBroken >= totalBreakableWalls) {
+			endOfGame.setValue(true);
+		}
+	}
+
 }
 

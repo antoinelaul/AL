@@ -77,17 +77,17 @@ public class BreakoutGame implements Game {
 
     @Override
     public void save() {
-        System.out.println("restore(): Unimplemented operation");
+        System.out.println("save(): Unimplemented operation");
     }
 
     @Override
     public void pause() {
-        System.out.println("restore(): Unimplemented operation");
+        System.out.println("pause(): Unimplemented operation");
     }
 
     @Override
     public void resume() {
-        System.out.println("restore(): Unimplemented operation");
+        System.out.println("resume(): Unimplemented operation");
     }
 
     @Override
