@@ -6,14 +6,10 @@ import java.util.ArrayList;
 
 
 public class Main {
-    private static final int width = 640;
-    private static final int height = 480;
-
-
     public static void main(String[] args) {
-        BreakoutGame g = new BreakoutGame(width, height);
+        BreakoutGame g = new BreakoutGame();
         ArrayList<GameLevel> levels = new ArrayList<>();
-        levels.add(new GameLevelOne(g, width, height));
+        levels.add(new GameLevelOne(g));
 
         g.setLevels(levels);
         g.start();

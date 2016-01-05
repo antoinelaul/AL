@@ -1,7 +1,5 @@
 package entities;
 
-import gameframework.base.Drawable;
-import gameframework.base.DrawableImage;
 import gameframework.game.GameEntity;
 import gameframework.game.MoveBlocker;
 
@@ -23,7 +21,7 @@ public class InvisibleWall implements MoveBlocker, GameEntity {
         this.hztl = hztl;
 	}
 
-	public Point getPos() {
+	public Point getPosition() {
 		return (new Point(x, y));
 	}
 

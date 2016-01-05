@@ -1,24 +1,21 @@
+import controllers.BallMoveBlocker;
 import controllers.BreakoutOverlapRules;
-import entities.Ball;
-import entities.BreakableWall;
-import entities.UnbreakableWall;
-import entities.InvisibleWall;
-import gameframework.base.MoveStrategyStraightLine;
-import models.BallMoveBlocker;
+import entities.*;
+import gameframework.game.*;
 import models.BreakoutUniverseViewPort;
 import models.MoveStrategyBall;
 import models.MoveStrategyHorizontal;
-import entities.Player;
-import gameframework.game.*;
 
 import java.awt.*;
 
 
 
 public class GameLevelOne extends GameLevelDefaultImpl {
+	private final static int WIDTH = 640;
+	private final static int HEIGHT = 480;
+
 	private Canvas canvas;
-	private int width;
-	private int height;
+
 
 	static int[][] tab = {
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -57,11 +54,8 @@ public class GameLevelOne extends GameLevelDefaultImpl {
 
 	public static final int SPRITE_SIZE = 16;
 
-	public GameLevelOne(Game g, int w, int h) {
+	public GameLevelOne(Game g) {
 		super(g);
-
-		width = w;
-		height = h;
 		canvas = g.getCanvas();
 	}
 
@@ -72,7 +66,7 @@ public class GameLevelOne extends GameLevelDefaultImpl {
 		MoveBlockerChecker moveBlockerChecker = new MoveBlockerCheckerDefaultImpl();
 		moveBlockerChecker.setMoveBlockerRules(new BallMoveBlocker());
 
-		BreakoutOverlapRules overlapRules = new BreakoutOverlapRules(endOfGame);
+		BreakoutOverlapRules overlapRules = new BreakoutOverlapRules(life[0], score[0], endOfGame);
 		overlapProcessor.setOverlapRules(overlapRules);
 
 		universe = new GameUniverseDefaultImpl(moveBlockerChecker, overlapProcessor);
@@ -87,10 +81,10 @@ public class GameLevelOne extends GameLevelDefaultImpl {
 		for (int i = 0; i < 32; ++i) {
 			for (int j = 0; j < 41; ++j) {
 				if (tab[i][j] == 1) {
-					universe.addGameEntity(new UnbreakableWall(canvas, j * SPRITE_SIZE, i * SPRITE_SIZE, 16, 16));
+					universe.addGameEntity(new UnbreakableBrick(canvas, j * SPRITE_SIZE, i * SPRITE_SIZE, 16, 16));
 				}
 				if(tab[i][j] == 2) {
-					universe.addGameEntity(new BreakableWall(canvas, j * SPRITE_SIZE, i * SPRITE_SIZE, 16, 16));
+					universe.addGameEntity(new BreakableBrick(canvas, j * SPRITE_SIZE, i * SPRITE_SIZE));
 					totalBreakableWalls++;
 				}
 			}
@@ -98,18 +92,20 @@ public class GameLevelOne extends GameLevelDefaultImpl {
 		overlapRules.setTotalBreakableWalls(totalBreakableWalls);
 
 		// Borders.
-		universe.addGameEntity(new InvisibleWall(-10, 0, 10, height, false));
-		universe.addGameEntity(new InvisibleWall(width, 0, 10, height, false));
-		universe.addGameEntity(new InvisibleWall(0, -10, width, 10, true));
+		universe.addGameEntity(new InvisibleWall(-10, 0, 10, HEIGHT, false));
+		universe.addGameEntity(new InvisibleWall(WIDTH, 0, 10, HEIGHT, false));
+		universe.addGameEntity(new InvisibleWall(0, -10, WIDTH, 10, true));
+        universe.addGameEntity(new EndLine(0, HEIGHT, WIDTH, 10));
 
-		// Player configuration.
+
+        // Player configuration.
 		Player player = new Player(canvas);
 
 		GameMovableDriverDefaultImpl pdriver = new GameMovableDriverDefaultImpl();
 		MoveStrategyHorizontal keyStr = new MoveStrategyHorizontal();
 		pdriver.setStrategy(keyStr);
 		pdriver.setmoveBlockerChecker(moveBlockerChecker);
-		player.setPosition(new Point(width / 2,  height - 16));
+		player.setPosition(new Point(WIDTH / 2,  HEIGHT - 16));
 
 		canvas.addKeyListener(keyStr);
 		player.setDriver(pdriver);
@@ -122,7 +118,7 @@ public class GameLevelOne extends GameLevelDefaultImpl {
 		bdriver.setStrategy(ballStr);
 		bdriver.setmoveBlockerChecker(moveBlockerChecker);
 
-		ball.setPosition(new Point(width / 2, height - 15));
+		ball.setPosition(new Point(WIDTH / 2, HEIGHT - 16));
 		ball.setDriver(bdriver);
 		universe.addGameEntity(ball);
 	}
