@@ -22,10 +22,10 @@ public class MoveStrategyHorizontal extends KeyAdapter implements MoveStrategy {
     public void keyPressed(KeyEvent event) {
         switch(event.getKeyCode()) {
             case 37:
-                speedVector.setDirection(new Point(-2, 0));
+                speedVector.setDirection(new Point(-3, 0));
                 break;
             case 39:
-                speedVector.setDirection(new Point(2, 0));
+                speedVector.setDirection(new Point(3, 0));
                 break;
 
             default: break;
