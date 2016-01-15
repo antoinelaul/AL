@@ -9,26 +9,30 @@ import gameframework.game.GameEntity;
 import java.awt.*;
 
 public abstract class AbstractBrick implements Drawable, Overlappable, GameEntity {
-    private final static int WIDTH = 16;
+    private final static int WIDTH = 32;
     private final static int HEIGHT = 16;
 
     protected static DrawableImage image = null;
     int x, y;
+    int width;
+    int height;
 
-    public AbstractBrick(Canvas defaultCanvas, int x, int y) {
+    public AbstractBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
         image = new DrawableImage(getImage(), defaultCanvas);
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(image.getImage(), x, y, WIDTH, HEIGHT, null);
+        g.drawImage(image.getImage(), x, y, width, height, null);
     }
 
     @Override
     public Rectangle getBoundingBox() {
-        return (new Rectangle(x, y, WIDTH, HEIGHT));
+        return (new Rectangle(x, y, width, height));
     }
 
     @Override

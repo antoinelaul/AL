@@ -1,7 +1,6 @@
 package controllers;
 
 import entities.Ball;
-import entities.BreakableBrick;
 import entities.InvisibleWall;
 import entities.UnbreakableBrick;
 import gameframework.base.SpeedVector;
@@ -20,11 +19,11 @@ public class BallMoveBlocker extends MoveBlockerRulesApplierDefaultImpl {
         Point p = sv.getDirection();
         MoveStrategyBall ballStr;
 
+
         if (wall.isHztl())
             ballStr = new MoveStrategyBall(p.x, -p.y);
         else
             ballStr = new MoveStrategyBall(-p.x, p.y);
-
 
         GameMovableDriverDefaultImpl bdriver = (GameMovableDriverDefaultImpl) ball.getDriver();
         bdriver.setStrategy(ballStr);
@@ -32,28 +31,55 @@ public class BallMoveBlocker extends MoveBlockerRulesApplierDefaultImpl {
         throw new IllegalMoveException();
     }
     
-    public void moveBlockerRule(Ball b, UnbreakableBrick w) throws IllegalMoveException {
-        SpeedVector sv = b.getSpeedVector();
+    public void moveBlockerRule(Ball ball, UnbreakableBrick ubrick) throws IllegalMoveException {
+        SpeedVector sv = ball.getSpeedVector();
         Point p = sv.getDirection();
-        MoveStrategyBall ballStr;
+        //MoveStrategyBall ballStr;
 
+       /* Point bp = ball.getPosition();
+        Point up = ubrick.getPosition();
+        Rectangle ubb = ubrick.getBoundingBox();
+
+        int dx = p.x;
+        int dy = p.y;
+        int deltax = bp.x - up.x;
+        int deltay = bp.y - up.y;
+
+        System.out.println("-----------");
+        System.out.println(deltax + ", " + deltay);
+        System.out.println(dx + ", " + dy);
+
+        if (deltax <= 0 || deltax >= ubb.getWidth())
+            dx = -dx;
+
+        if (deltay <= 0 || deltay >= ubb.getHeight())
+            dy = -dy;
+
+        System.out.println(dx + ", " + dy); */
 
         // THIS IS A AWFUL WAY.. we must change it and it does not work...
         // Problem when the ball hit two block at the same time !
-        if (w.getPosition().x < b.getPosition().x) {
+      /*  if (brick.getPosition().x < ball.getPosition().x) {
             ballStr = new MoveStrategyBall(-p.x, p.y);
-        } else if (w.getPosition().x >= b.getPosition().x) {
+        } else if (brick.getPosition().x >= ball.getPosition().x) {
             ballStr = new MoveStrategyBall(-p.x, p.y);
-        } else if (w.getPosition().y < b.getPosition().y) {
+        } else if (brick.getPosition().y < ball.getPosition().y) {
             ballStr = new MoveStrategyBall(p.x, -p.y);
-        } else if (w.getPosition().y >= b.getPosition().y) {
+        } else if (brick.getPosition().y >= ball.getPosition().y) {
             ballStr = new MoveStrategyBall(p.x, -p.y);
         } else {
             ballStr = new MoveStrategyBall(-p.x, -p.y);
         }
+*/
+        GameMovableDriverDefaultImpl bdriver = (GameMovableDriverDefaultImpl) ball.getDriver();
+        bdriver.setStrategy(new MoveStrategyBall(-p.x, p.y));
 
-        GameMovableDriverDefaultImpl bdriver = (GameMovableDriverDefaultImpl) b.getDriver();
-        bdriver.setStrategy(ballStr);
+        SpeedVector newSv = bdriver.getSpeedVector(ball);
+       // System.out.println(newSv.getDirection());
+        if (newSv.getDirection().x == 0 && newSv.getDirection().y == 0) {
+            System.out.println(p.x + ", " + p.y);
+            bdriver.setStrategy(new MoveStrategyBall(p.x, -p.y));
+        }
 
         throw new IllegalMoveException();
     }

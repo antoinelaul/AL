@@ -14,19 +14,24 @@ import java.util.Scanner;
 public class BreakoutGameLevel extends GameLevelDefaultImpl {
     private final static int WIDTH = 640;
     private final static int HEIGHT = 480;
+    public static final int SPRITE_SIZE = 16;
+    public static final int SPRITE_OFFSET_X = 4;  // offset for placement.
+    public static final int SPRITE_OFFSET_Y = 3;  // offset for placement.
+
     private int values[][];
 
     private Canvas canvas;
+    private int width;
+    private int height;
 
-    public static final int SPRITE_SIZE = 16;
 
     public BreakoutGameLevel(Game g, String filename) throws IOException {
         super(g);
         canvas = g.getCanvas();
 
         Scanner sc = new Scanner(new File(filename));
-        int width = sc.nextInt();
-        int height = sc.nextInt();
+        width = sc.nextInt();
+        height = sc.nextInt();
 
         values = new int[height][width];
         int cursor = 0;
@@ -56,13 +61,20 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
         int totalBreakableWalls = 0;
 
         // Filling up the universe with basic non movable entities and inclusion in the universe
-        for (int i = 0; i < 32; ++i) {
-            for (int j = 0; j < 41; ++j) {
+        // Width is twice bigger than height.
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
                 if (values[i][j] == 1) {
-                    universe.addGameEntity(new UnbreakableBrick(canvas, j * SPRITE_SIZE, i * SPRITE_SIZE, 16, 16));
+                    universe.addGameEntity(new UnbreakableBrick(canvas,
+                            (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                            (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                            2 * SPRITE_SIZE, SPRITE_SIZE));
                 }
                 if(values[i][j] == 2) {
-                    universe.addGameEntity(new BreakableBrick(canvas, j * SPRITE_SIZE, i * SPRITE_SIZE));
+                    universe.addGameEntity(new BreakableBrick(canvas,
+                            (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                            (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                            2 * SPRITE_SIZE, SPRITE_SIZE));
                     totalBreakableWalls++;
                 }
             }

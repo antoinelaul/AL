@@ -13,12 +13,9 @@ import java.awt.Rectangle;
 
 public class BreakableBrick extends AbstractBrick {
 	protected static DrawableImage image = null;
-	int x, y;
-	int width;
-    int height;
-    
-	public BreakableBrick(Canvas defaultCanvas, int x, int y) {
-        super(defaultCanvas, x, y);
+
+	public BreakableBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
+        super(defaultCanvas, x, y, width, height);
     }
 
     @Override
