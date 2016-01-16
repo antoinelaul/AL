@@ -11,29 +11,28 @@ import java.awt.*;
 public class Ball extends GameMovable implements Drawable, GameEntity, Overlappable {
     protected static DrawableImage image;
 
-    public static final int RENDERING_SIZE = 16;
+    private int size;
 
 
-    public Ball(Canvas canvas) {
+    public Ball(Canvas canvas, int size) {
         image = new DrawableImage("assets/images/ball.png", canvas);
+        this.size = size;
     }
 
 
     @Override
     public void draw(Graphics g) {
         g.drawImage(image.getImage(), (int) getPosition().getX(),
-                (int) getPosition().getY(), RENDERING_SIZE, RENDERING_SIZE,
-                null);
+                (int) getPosition().getY(), size, size, null);
     }
 
     @Override
     public void oneStepMoveAddedBehavior() {
-
     }
 
     @Override
     public Rectangle getBoundingBox() {
-        return new Rectangle(0, 0, RENDERING_SIZE, RENDERING_SIZE);
+        return new Rectangle(0, 0, size, size);
 
     }
 }

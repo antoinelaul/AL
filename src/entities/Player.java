@@ -1,6 +1,5 @@
 package entities;
 
-
 import gameframework.base.Drawable;
 import gameframework.base.DrawableImage;
 import gameframework.base.Overlappable;
@@ -15,24 +14,25 @@ import java.awt.*;
 public class Player extends GameMovable implements Drawable, GameEntity, Overlappable {
     protected static DrawableImage image;
 
-    public static final int RENDERING_WIDTH = 64;
-    public static final int RENDERING_HEIGHT = 16;
+    private int width;
+    private int height;
 
 
-    public Player(Canvas canvas) {
+    public Player(Canvas canvas, int width, int height) {
         image = new DrawableImage("assets/images/player.png", canvas);
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public void draw(Graphics g) {
         g.drawImage(image.getImage(), (int) getPosition().getX(),
-                (int) getPosition().getY(), RENDERING_WIDTH, RENDERING_HEIGHT,
-                null);
+                (int) getPosition().getY(), width, height, null);
     }
 
     @Override
     public Rectangle getBoundingBox() {
-        return new Rectangle(0, 0, RENDERING_WIDTH, RENDERING_HEIGHT);
+        return new Rectangle(0, 0, width, height);
     }
 
     @Override

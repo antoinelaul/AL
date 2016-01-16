@@ -9,9 +9,6 @@ import gameframework.game.GameEntity;
 import java.awt.*;
 
 public abstract class AbstractBrick implements Drawable, Overlappable, GameEntity {
-    private final static int WIDTH = 32;
-    private final static int HEIGHT = 16;
-
     protected static DrawableImage image = null;
     int x, y;
     int width;

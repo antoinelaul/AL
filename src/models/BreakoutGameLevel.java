@@ -1,9 +1,10 @@
 package models;
 
 
-import controllers.BallMoveBlocker;
+import controllers.BallMoveBlockerApplier;
 import controllers.BreakoutOverlapRules;
 import entities.*;
+import gameframework.base.ObservableValue;
 import gameframework.game.*;
 
 import java.awt.*;
@@ -17,6 +18,9 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
     public static final int SPRITE_SIZE = 16;
     public static final int SPRITE_OFFSET_X = 4;  // offset for placement.
     public static final int SPRITE_OFFSET_Y = 3;  // offset for placement.
+
+    private ObservableValue<Player> observablePlayer;
+    private ObservableValue<Ball> observableBall;
 
     private int values[][];
 
@@ -40,15 +44,19 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
             values[cursor / width][cursor % width] = sc.nextInt();
             cursor++;
         }
+
+        observablePlayer = new ObservableValue<>(new Player(canvas, 4 * SPRITE_SIZE, SPRITE_SIZE));
+        observableBall = new ObservableValue<>(new Ball(canvas, SPRITE_SIZE));
     }
 
     @Override
     protected void init() {
         OverlapProcessor overlapProcessor = new OverlapProcessorDefaultImpl();
         MoveBlockerChecker moveBlockerChecker = new MoveBlockerCheckerDefaultImpl();
-        moveBlockerChecker.setMoveBlockerRules(new BallMoveBlocker());
+        moveBlockerChecker.setMoveBlockerRules(new BallMoveBlockerApplier());
 
-        BreakoutOverlapRules overlapRules = new BreakoutOverlapRules(life[0], score[0], endOfGame);
+        BreakoutOverlapRules overlapRules =
+                new BreakoutOverlapRules(life[0], score[0], endOfGame, observablePlayer, observableBall);
         overlapProcessor.setOverlapRules(overlapRules);
 
         universe = new GameUniverseDefaultImpl(moveBlockerChecker, overlapProcessor);
@@ -56,7 +64,6 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
 
         gameBoard = new BreakoutUniverseViewPort(canvas, universe);
         ((CanvasDefaultImpl) canvas).setDrawingGameBoard(gameBoard);
-
 
         int totalBreakableWalls = 0;
 
@@ -89,26 +96,26 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
 
 
         // Player configuration.
-        Player player = new Player(canvas);
+        Player player = observablePlayer.getValue();
 
         GameMovableDriverDefaultImpl pdriver = new GameMovableDriverDefaultImpl();
-        MoveStrategyHorizontal keyStr = new MoveStrategyHorizontal();
+        MoveStrategyPlayer keyStr = new MoveStrategyPlayer();
         pdriver.setStrategy(keyStr);
         pdriver.setmoveBlockerChecker(moveBlockerChecker);
-        player.setPosition(new Point(WIDTH / 2,  HEIGHT - 16));
+        player.setPosition(new Point(WIDTH / 2, HEIGHT - SPRITE_SIZE));
 
         canvas.addKeyListener(keyStr);
         player.setDriver(pdriver);
         universe.addGameEntity(player);
 
         // Ball configuration.
-        Ball ball = new Ball(canvas);
-        GameMovableDriverDefaultImpl bdriver = new GameMovableDriverDefaultImpl();
+        Ball ball = observableBall.getValue();
+        GameMovableDriverDefaultImpl bdriver = new BreakoutBallDriver();
         MoveStrategyBall ballStr = new MoveStrategyBall(2, 1);
         bdriver.setStrategy(ballStr);
         bdriver.setmoveBlockerChecker(moveBlockerChecker);
 
-        ball.setPosition(new Point(WIDTH / 2, HEIGHT - 16));
+        ball.setPosition(new Point(WIDTH / 2 - 4 * SPRITE_SIZE,  HEIGHT - 9 * SPRITE_SIZE));
         ball.setDriver(bdriver);
         universe.addGameEntity(ball);
     }

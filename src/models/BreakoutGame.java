@@ -62,13 +62,32 @@ public class BreakoutGame implements Game, Observer {
         Container sb = createStatusBar();
         frame.add(sb, BorderLayout.SOUTH);
 
-        frame.pack();
-        frame.setVisible(true);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
+
+        // Put platform look and feel.
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            SwingUtilities.updateComponentTreeUI(frame);
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
+        frame.pack();
+        frame.setVisible(true);
     }
 
     private void createMenuBar() {

@@ -9,6 +9,7 @@ import gameframework.base.SpeedVector;
 import gameframework.game.GameMovableDriverDefaultImpl;
 import gameframework.game.GameUniverse;
 import gameframework.game.OverlapRulesApplierDefaultImpl;
+import models.BreakoutBallDriver;
 import models.MoveStrategyBall;
 
 import java.awt.*;
@@ -16,19 +17,26 @@ import java.awt.*;
 
 
 public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
+    private static final int SPRITE_SIZE = 16;
+
     protected GameUniverse universe;
     private int totalBreakableWalls = 0;
     private int wallBroken = 0;
     private final ObservableValue<Integer> score;
     private final ObservableValue<Integer> life;
     private final ObservableValue<Boolean> endOfGame;
+    private final ObservableValue<Player> observablePlayer;
+    private final ObservableValue<Ball> observableBall;
 
 
     public BreakoutOverlapRules(ObservableValue<Integer> life, ObservableValue<Integer> score,
-                                ObservableValue<Boolean> endOfGame) {
+                                ObservableValue<Boolean> endOfGame,
+                                ObservableValue<Player> player, ObservableValue<Ball> ball) {
         this.life = life;
         this.score = score;
         this.endOfGame = endOfGame;
+        this.observablePlayer = player;
+        this.observableBall = ball;
     }
 
     public void setTotalBreakableWalls(int totalBkw) {
@@ -42,26 +50,25 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
 
     public void overlapRule(Player player, Ball ball) {
         // Change strategy.
-        SpeedVector sv = ball.getSpeedVector();
-        Point p = sv.getDirection();
+        SpeedVector speedVector = ball.getSpeedVector();
+        Point point = speedVector.getDirection();
 
-        MoveStrategyBall ballStr = new MoveStrategyBall(p.x, -p.y);
-        GameMovableDriverDefaultImpl bdriver = (GameMovableDriverDefaultImpl) ball.getDriver();
-        bdriver.setStrategy(ballStr);
+        MoveStrategyBall ballStr = new MoveStrategyBall(point.x, -point.y);
+        ((GameMovableDriverDefaultImpl) ball.getDriver()).setStrategy(ballStr);
 
         // Place the ball out of the player, to avoid multiple collisions.
-        Point bpp = ball.getPosition();
-        Point ppp = player.getPosition();
-        Rectangle pbb = player.getBoundingBox();
+        Point ballPosition = ball.getPosition();
+        Point playerPosition = player.getPosition();
+        Rectangle playerBoundingBox = player.getBoundingBox();
 
-        ball.setPosition(new Point(bpp.x, ppp.y - pbb.height));
+        ball.setPosition(new Point(ballPosition.x, playerPosition.y - playerBoundingBox.height));
     }
 
-    public void overlapRule(Ball ball, BreakableBrick bkw) {
-        SpeedVector sv = ball.getSpeedVector();
-        Point p = sv.getDirection();
+    public void overlapRule(Ball ball, BreakableBrick brick) {
+        SpeedVector speedVector = ball.getSpeedVector();
+        Point point = speedVector.getDirection();
         MoveStrategyBall ballStr;
-        ballStr = new MoveStrategyBall(p.x, p.y);
+        ballStr = new MoveStrategyBall(point.x, point.y);
 
         // First way
         /*if(bkw.getPosition().x < ball.getPosition().x){
@@ -77,10 +84,10 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         }*/
 
         //Second way
-        if(bkw.getPosition().getX() == ball.getPosition().getX()){
-            ballStr = new MoveStrategyBall(p.x, -p.y);
-        }else if(bkw.getPosition().getY() == ball.getPosition().getY()) {
-            ballStr = new MoveStrategyBall(-p.x, p.y);
+        if(brick.getPosition().getX() == ball.getPosition().getX()){
+            ballStr = new MoveStrategyBall(point.x, -point.y);
+        }else if(brick.getPosition().getY() == ball.getPosition().getY()) {
+            ballStr = new MoveStrategyBall(-point.x, point.y);
         }
 
         //Third way, still does not work..
@@ -108,16 +115,28 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
             ballStr = new MoveStrategyBall(-p.x, -p.y);
         }*/
 
-        GameMovableDriverDefaultImpl bdriver = (GameMovableDriverDefaultImpl) ball.getDriver();
-        bdriver.setStrategy(ballStr);
+        GameMovableDriverDefaultImpl ballDriver = (GameMovableDriverDefaultImpl) ball.getDriver();
+        ballDriver.setStrategy(ballStr);
 
-        score.setValue(score.getValue() + bkw.getValue());
+        score.setValue(score.getValue() + brick.getValue());
 
-        universe.removeGameEntity(bkw);
+        universe.removeGameEntity(brick);
         wallBrokenHandler();
     }
 
     public void overlapRule(Ball ball, EndLine line) {
+        // Strategy change.
+        BreakoutBallDriver driver = (BreakoutBallDriver) ball.getDriver();
+        driver.setStrategy(new MoveStrategyBall(2, 1));
+
+        // Put the ball just above the player.
+        Player player = observablePlayer.getValue();
+        Point playerPosition = player.getPosition();
+        Rectangle playerBoundingBox = player.getBoundingBox();
+        ball.setPosition(
+                new Point(playerPosition.x - 2 * playerBoundingBox.width,
+                        playerPosition.y - playerBoundingBox.height));
+
         life.setValue(life.getValue() - 1);
     }
 

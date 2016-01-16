@@ -22,18 +22,18 @@ public class GameMovableDriverDefaultImpl implements GameMovableDriver {
 	public SpeedVector getSpeedVector(Movable m) {
 		SpeedVector possibleSpeedVector;
 
-		possibleSpeedVector = moveStrategy.getSpeedVector();
-		if (moveBlockerChecker.moveValidation(m, possibleSpeedVector)) {
+        possibleSpeedVector = moveStrategy.getSpeedVector();
+        if (moveBlockerChecker.moveValidation(m, possibleSpeedVector)) {
 			return possibleSpeedVector;
 		}
 
 		// If the strategy did not provide a valid vector, try to keep the
 		// current vector.
 		possibleSpeedVector = m.getSpeedVector();
-		if (moveBlockerChecker.moveValidation(m, possibleSpeedVector)) {
+        if (moveBlockerChecker.moveValidation(m, possibleSpeedVector)) {
 			return possibleSpeedVector;
 		}
 
-		return SpeedVectorDefaultImpl.createNullVector();
+        return SpeedVectorDefaultImpl.createNullVector();
 	}
 }

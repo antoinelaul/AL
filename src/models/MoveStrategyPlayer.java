@@ -9,7 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 
-public class MoveStrategyHorizontal extends KeyAdapter implements MoveStrategy {
+public class MoveStrategyPlayer extends KeyAdapter implements MoveStrategy {
     protected SpeedVector speedVector = new SpeedVectorDefaultImpl(new Point(0, 0));
 
 

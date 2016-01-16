@@ -1,15 +1,8 @@
 package entities;
 
-import gameframework.base.Drawable;
 import gameframework.base.DrawableImage;
-import gameframework.base.Overlappable;
-import gameframework.game.GameEntity;
-import gameframework.game.MoveBlocker;
 
-import java.awt.Canvas;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 
 public class BreakableBrick extends AbstractBrick {
 	protected static DrawableImage image = null;
