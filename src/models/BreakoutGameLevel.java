@@ -111,11 +111,11 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
         // Ball configuration.
         Ball ball = observableBall.getValue();
         GameMovableDriverDefaultImpl bdriver = new BreakoutBallDriver();
-        MoveStrategyBall ballStr = new MoveStrategyBall(2, 1);
+        MoveStrategyBall ballStr = new MoveStrategyBall(2, -1);
         bdriver.setStrategy(ballStr);
         bdriver.setmoveBlockerChecker(moveBlockerChecker);
 
-        ball.setPosition(new Point(WIDTH / 2 - 4 * SPRITE_SIZE,  HEIGHT - 9 * SPRITE_SIZE));
+        ball.setPosition(new Point(WIDTH / 2,  HEIGHT - 2 * SPRITE_SIZE));
         ball.setDriver(bdriver);
         universe.addGameEntity(ball);
     }

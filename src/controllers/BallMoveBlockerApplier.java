@@ -53,13 +53,12 @@ public class BallMoveBlockerApplier extends MoveBlockerRulesApplierDefaultImpl {
 
         // If the direction is null, no need to set strategies... in any case, the ball will stay
         // in place.
-        if (p.x != 0 && p.y != 0)
-            ((BreakoutBallDriver) ball.getDriver()).setStrategies(new MoveStrategy[] {
-                    // Every direction change is tested.
-                    new MoveStrategyBall(p.x, -p.y),
-                    new MoveStrategyBall(-p.x, p.y),
-                    new MoveStrategyBall(-p.x, -p.y),
-            });
+        ((BreakoutBallDriver) ball.getDriver()).setStrategies(new MoveStrategy[] {
+                // Every direction change is tested.
+                new MoveStrategyBall(p.x, -p.y),
+                new MoveStrategyBall(-p.x, p.y),
+                new MoveStrategyBall(-p.x, -p.y),
+        });
 
         throw new IllegalMoveException();
     }
