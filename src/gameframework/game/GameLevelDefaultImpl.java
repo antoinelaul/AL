@@ -46,7 +46,7 @@ public abstract class GameLevelDefaultImpl extends Thread implements GameLevel {
 	@Override
 	public void run() {
 		stopGameLoop = false;
-		// main game loop 
+		// main game loop
 		long start;
 		while (!stopGameLoop && !this.isInterrupted()) {
 			start = new Date().getTime();
@@ -62,7 +62,7 @@ public abstract class GameLevelDefaultImpl extends Thread implements GameLevel {
 			} catch (Exception e) {
 			}
 		}
-	}
+    }
 
 	public void end() {
 		stopGameLoop = true;

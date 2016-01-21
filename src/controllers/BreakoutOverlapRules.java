@@ -4,6 +4,7 @@ import entities.Ball;
 import entities.BreakableBrick;
 import entities.EndLine;
 import entities.Player;
+import gameframework.base.MoveStrategy;
 import gameframework.base.ObservableValue;
 import gameframework.base.SpeedVector;
 import gameframework.game.GameMovableDriverDefaultImpl;
@@ -49,26 +50,29 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
     }
 
     public void overlapRule(Player player, Ball ball) {
-        // Change strategy.
         SpeedVector speedVector = ball.getSpeedVector();
-        Point point = speedVector.getDirection();
-
-        MoveStrategyBall ballStr = new MoveStrategyBall(point.x, -point.y);
-        ((GameMovableDriverDefaultImpl) ball.getDriver()).setStrategy(ballStr);
-
-        // Place the ball out of the player, to avoid multiple collisions.
+        Point dir = speedVector.getDirection();
         Point ballPosition = ball.getPosition();
         Point playerPosition = player.getPosition();
         Rectangle playerBoundingBox = player.getBoundingBox();
 
+        // Change x speed according ball position. Unfortunately, it's not possible to use floats.
+        if (ballPosition.x - playerPosition.x < playerBoundingBox.width / 2)
+            ((GameMovableDriverDefaultImpl) ball.getDriver()).setStrategy(
+                    new MoveStrategyBall(dir.x - 1, -dir.y));
+
+        else
+            ((GameMovableDriverDefaultImpl) ball.getDriver()).setStrategy(
+                    new MoveStrategyBall(dir.x + 1, -dir.y));
+
+        // Place the ball out of the player, to avoid multiple collisions.
         ball.setPosition(new Point(ballPosition.x, playerPosition.y - playerBoundingBox.height));
     }
 
     public void overlapRule(Ball ball, BreakableBrick brick) {
-        SpeedVector speedVector = ball.getSpeedVector();
-        Point point = speedVector.getDirection();
-        MoveStrategyBall ballStr;
-        ballStr = new MoveStrategyBall(point.x, point.y);
+      //  SpeedVector speedVector = ball.getSpeedVector();
+      //  Point point = speedVector.getDirection();
+       // MoveStrategyBall ballStr = new MoveStrategyBall(point.x, point.y);
 
         // First way
         /*if(bkw.getPosition().x < ball.getPosition().x){
@@ -84,11 +88,11 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         }*/
 
         //Second way
-        if(brick.getPosition().getX() == ball.getPosition().getX()){
+      /*  if(brick.getPosition().getX() == ball.getPosition().getX()){
             ballStr = new MoveStrategyBall(point.x, -point.y);
         }else if(brick.getPosition().getY() == ball.getPosition().getY()) {
             ballStr = new MoveStrategyBall(-point.x, point.y);
-        }
+        } */
 
         //Third way, still does not work..
         // Avant ça ne marchait pas car je ne prenais pas en compte la taille de la balle ou de la brique
@@ -115,11 +119,27 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
             ballStr = new MoveStrategyBall(-p.x, -p.y);
         }*/
 
-        GameMovableDriverDefaultImpl ballDriver = (GameMovableDriverDefaultImpl) ball.getDriver();
-        ballDriver.setStrategy(ballStr);
+     /*   GameMovableDriverDefaultImpl ballDriver = (GameMovableDriverDefaultImpl) ball.getDriver();
+        ballDriver.setStrategy(ballStr); */
+
+        Point ballPosition = ball.getPosition();
+        Point brickPosition = brick.getPosition();
+        Rectangle brickBoundingBox = brick.getBoundingBox();
+        Point dir = ball.getSpeedVector().getDirection();
+        int dx = dir.x, dy = dir.y;
+        int deltax = ballPosition.x - brickPosition.x,
+                deltay = ballPosition.y - brickPosition.y;
+
+        /*if (deltax <= 0 || deltax >= brickBoundingBox.width / 2)
+            dx = -dx;
+
+        if (deltay <= 0 || deltay >= brickBoundingBox.height / 2)
+            dy = -dy;*/
+
+       // System.out.println(deltax + ", " + deltay);
+        ((GameMovableDriverDefaultImpl) ball.getDriver()).setStrategy(new MoveStrategyBall(dx, dy));
 
         score.setValue(score.getValue() + brick.getValue());
-
         universe.removeGameEntity(brick);
         wallBrokenHandler();
     }
@@ -127,14 +147,14 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
     public void overlapRule(Ball ball, EndLine line) {
         // Strategy change.
         BreakoutBallDriver driver = (BreakoutBallDriver) ball.getDriver();
-        driver.setStrategy(new MoveStrategyBall(2, 1));
+        driver.setStrategy(new MoveStrategyBall(2, -1));
 
         // Put the ball just above the player.
         Player player = observablePlayer.getValue();
         Point playerPosition = player.getPosition();
         Rectangle playerBoundingBox = player.getBoundingBox();
         ball.setPosition(
-                new Point(playerPosition.x - 2 * playerBoundingBox.width,
+                new Point(playerPosition.x / SPRITE_SIZE * SPRITE_SIZE,     // To correct place the ball according the 'grid'.
                         playerPosition.y - playerBoundingBox.height));
 
         life.setValue(life.getValue() - 1);

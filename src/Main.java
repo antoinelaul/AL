@@ -11,7 +11,7 @@ public class Main {
         BreakoutGame g = new BreakoutGame();
         ArrayList<GameLevel> levels = new ArrayList<>();
 
-        levels.add(new BreakoutGameLevel(g, "assets/levels/three.txt"));
+        levels.add(new BreakoutGameLevel(g, "assets/levels/four.txt"));
 
         g.setLevels(levels);
         g.start();
