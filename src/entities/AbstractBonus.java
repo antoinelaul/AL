@@ -8,14 +8,13 @@ import gameframework.game.GameMovable;
 
 import java.awt.*;
 
-public class Ball extends GameMovable implements Drawable, GameEntity, Overlappable {
-    protected static DrawableImage image;
 
+abstract public class AbstractBonus extends GameMovable implements Drawable, GameEntity, Overlappable {
+    protected DrawableImage image;
     private int size;
 
-
-    public Ball(Canvas canvas, int size) {
-        image = new DrawableImage("assets/images/ball.png", canvas);
+    public AbstractBonus(Canvas canvas, int size) {
+        image = new DrawableImage(getImage(), canvas);
         this.size = size;
     }
 
@@ -26,12 +25,12 @@ public class Ball extends GameMovable implements Drawable, GameEntity, Overlappa
     }
 
     @Override
-    public void oneStepMoveAddedBehavior() {
-    }
+    public void oneStepMoveAddedBehavior() { }
 
     @Override
     public Rectangle getBoundingBox() {
         return new Rectangle(0, 0, size, size);
-
     }
+
+    abstract String getImage();
 }

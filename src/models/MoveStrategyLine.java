@@ -7,11 +7,11 @@ import gameframework.base.SpeedVectorDefaultImpl;
 import java.awt.*;
 
 
-public class MoveStrategyBall implements MoveStrategy {
+public class MoveStrategyLine implements MoveStrategy {
     protected SpeedVector speedVector;
 
 
-    public MoveStrategyBall(int dx, int dy) {
+    public MoveStrategyLine(int dx, int dy) {
         speedVector = new SpeedVectorDefaultImpl(new Point(dx, dy));
     }
 

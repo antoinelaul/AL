@@ -140,6 +140,7 @@ public class BreakoutGame implements Game, Observer {
         scoreValue = new Label(Integer.toString(score[0].getValue()));
         currentLevelValue = new Label(Integer.toString(levelNumber));
 
+        lifeValue.setPreferredSize(new Dimension(50, 10));
         scoreValue.setPreferredSize(new Dimension(100, 10));
 
         statusBar.add(lifeText);
@@ -152,7 +153,7 @@ public class BreakoutGame implements Game, Observer {
         return statusBar;
     }
 
-        @Override
+    @Override
     public Canvas getCanvas() {
         return canvas;
     }
@@ -244,7 +245,7 @@ public class BreakoutGame implements Game, Observer {
                         currentPlayedLevel.interrupt();
                         currentPlayedLevel.end();
 
-                        JOptionPane.showMessageDialog(frame, "You lost... what kind of shit are you ?",
+                        JOptionPane.showMessageDialog(frame, "You lost... sad !",
                                 "Message for loosers", JOptionPane.PLAIN_MESSAGE);
                     }
                 }

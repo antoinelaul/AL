@@ -8,30 +8,32 @@ import gameframework.game.GameMovable;
 
 import java.awt.*;
 
-public class Ball extends GameMovable implements Drawable, GameEntity, Overlappable {
-    protected static DrawableImage image;
 
-    private int size;
+public class Bullet extends GameMovable implements Drawable, GameEntity, Overlappable {
+    private DrawableImage image;
+    private int width;
+    private int height;
 
 
-    public Ball(Canvas canvas, int size) {
-        image = new DrawableImage("assets/images/ball.png", canvas);
-        this.size = size;
+    public Bullet(Canvas canvas, int width, int height) {
+        image = new DrawableImage("assets/images/bullet.png", canvas);
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public void draw(Graphics g) {
         g.drawImage(image.getImage(), (int) getPosition().getX(),
-                (int) getPosition().getY(), size, size, null);
+                (int) getPosition().getY(), width, height, null);
     }
 
     @Override
     public void oneStepMoveAddedBehavior() {
+
     }
 
     @Override
     public Rectangle getBoundingBox() {
-        return new Rectangle(0, 0, size, size);
-
+        return new Rectangle(0, 0, width, height);
     }
 }

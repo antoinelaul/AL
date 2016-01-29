@@ -16,6 +16,7 @@ public class Player extends GameMovable implements Drawable, GameEntity, Overlap
 
     private int width;
     private int height;
+    private int timeBullet = 0;
 
 
     public Player(Canvas canvas, int width, int height) {
@@ -37,6 +38,14 @@ public class Player extends GameMovable implements Drawable, GameEntity, Overlap
 
     @Override
     public void oneStepMoveAddedBehavior() {
+        timeBullet--;
+    }
 
+    public void setTimeBullet(int time) {
+        timeBullet = time;
+    }
+
+    public boolean isFiring() {
+        return timeBullet > 0;
     }
 }

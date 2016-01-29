@@ -5,7 +5,6 @@ import gameframework.base.DrawableImage;
 import java.awt.*;
 
 public class BreakableBrick extends AbstractBrick {
-	protected static DrawableImage image = null;
 
 	public BreakableBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
         super(defaultCanvas, x, y, width, height);
@@ -13,7 +12,7 @@ public class BreakableBrick extends AbstractBrick {
 
     @Override
     public String getImage() {
-        return "assets/images/redWall.png";
+        return "assets/images/basic_brick.png";
     }
 
     @Override

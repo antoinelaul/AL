@@ -56,7 +56,7 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
         moveBlockerChecker.setMoveBlockerRules(new BallMoveBlockerApplier());
 
         BreakoutOverlapRules overlapRules =
-                new BreakoutOverlapRules(life[0], score[0], endOfGame, observablePlayer, observableBall);
+                new BreakoutOverlapRules(canvas, life[0], score[0], endOfGame, observablePlayer, observableBall);
         overlapProcessor.setOverlapRules(overlapRules);
 
         universe = new GameUniverseDefaultImpl(moveBlockerChecker, overlapProcessor);
@@ -71,52 +71,69 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
         // Width is twice bigger than height.
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
-                if (values[i][j] == 1) {
-                    universe.addGameEntity(new UnbreakableBrick(canvas,
-                            (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
-                            (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
-                            2 * SPRITE_SIZE, SPRITE_SIZE));
-                }
-                if(values[i][j] == 2) {
-                    universe.addGameEntity(new BreakableBrick(canvas,
-                            (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
-                            (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
-                            2 * SPRITE_SIZE, SPRITE_SIZE));
-                    totalBreakableWalls++;
+                switch (values[i][j]) {
+                    case 1:
+                        universe.addGameEntity(new UnbreakableBrick(canvas,
+                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                                2 * SPRITE_SIZE, SPRITE_SIZE));
+                        break;
+
+                    case 2:
+                        universe.addGameEntity(new BreakableBrick(canvas,
+                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                                2 * SPRITE_SIZE, SPRITE_SIZE));
+                        totalBreakableWalls++;
+                        break;
+
+                    case 3:
+                        universe.addGameEntity(new BonusBrick(canvas,
+                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                                2 * SPRITE_SIZE, SPRITE_SIZE));
+                        totalBreakableWalls++;
+                        break;
+
+                    default: break;
                 }
             }
         }
+
         overlapRules.setTotalBreakableWalls(totalBreakableWalls);
 
         // Borders.
         universe.addGameEntity(new InvisibleWall(-10, 0, 10, HEIGHT, false));
         universe.addGameEntity(new InvisibleWall(WIDTH, 0, 10, HEIGHT, false));
         universe.addGameEntity(new InvisibleWall(0, -10, WIDTH, 10, true));
-        universe.addGameEntity(new EndLine(0, HEIGHT, WIDTH, 10));
+
+        universe.addGameEntity(new EndLine(0, HEIGHT, WIDTH, 10));      // For ball and bonus.
+        universe.addGameEntity(new EndLine(0, -20, WIDTH, 10));      // For bullets.
+
 
 
         // Player configuration.
         Player player = observablePlayer.getValue();
 
-        GameMovableDriverDefaultImpl pdriver = new GameMovableDriverDefaultImpl();
+        GameMovableDriverDefaultImpl playerDriver = new GameMovableDriverDefaultImpl();
         MoveStrategyPlayer keyStr = new MoveStrategyPlayer();
-        pdriver.setStrategy(keyStr);
-        pdriver.setmoveBlockerChecker(moveBlockerChecker);
+        playerDriver.setStrategy(keyStr);
+        playerDriver.setmoveBlockerChecker(moveBlockerChecker);
         player.setPosition(new Point(WIDTH / 2, HEIGHT - SPRITE_SIZE));
 
         canvas.addKeyListener(keyStr);
-        player.setDriver(pdriver);
+        player.setDriver(playerDriver);
         universe.addGameEntity(player);
 
         // Ball configuration.
         Ball ball = observableBall.getValue();
-        GameMovableDriverDefaultImpl bdriver = new BreakoutBallDriver();
-        MoveStrategyBall ballStr = new MoveStrategyBall(2, -1);
-        bdriver.setStrategy(ballStr);
-        bdriver.setmoveBlockerChecker(moveBlockerChecker);
+        GameMovableDriverDefaultImpl ballDriver = new BreakoutBallDriver();
+        MoveStrategyLine ballStr = new MoveStrategyLine(2, -1);
+        ballDriver.setStrategy(ballStr);
+        ballDriver.setmoveBlockerChecker(moveBlockerChecker);
 
         ball.setPosition(new Point(WIDTH / 2,  HEIGHT - 2 * SPRITE_SIZE));
-        ball.setDriver(bdriver);
+        ball.setDriver(ballDriver);
         universe.addGameEntity(ball);
     }
 }

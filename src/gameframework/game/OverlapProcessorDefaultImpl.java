@@ -26,12 +26,12 @@ public class OverlapProcessorDefaultImpl implements OverlapProcessor {
 	}
 
 	public void addOverlappable(Overlappable p) {
-		if (p instanceof Movable) {
+        if (p instanceof Movable) {
 			overlappablesMovable.add(p);
 		} else {
 			overlappablesNonMovable.add(p);
 		}
-	}
+    }
 
 	public void removeOverlappable(Overlappable p) {
 		if (p instanceof Movable) {
@@ -51,9 +51,10 @@ public class OverlapProcessorDefaultImpl implements OverlapProcessor {
 	public void processOverlapsAll() {
 		Vector<Overlap> overlaps = new Vector<Overlap>();
 
-		movablesTmp = new Vector<Overlappable>(overlappablesMovable);
-		for (Overlappable overlappable : overlappablesMovable) {
-			movablesTmp.remove(overlappable);
+        movablesTmp = new Vector<Overlappable>(overlappablesMovable);
+
+        for (Overlappable overlappable : overlappablesMovable) {
+            movablesTmp.remove(overlappable);
 			computeOneOverlap(overlappable, overlaps);
 		}
 		overlapRules.applyOverlapRules(overlaps);
@@ -61,7 +62,7 @@ public class OverlapProcessorDefaultImpl implements OverlapProcessor {
 
 	private void computeOneOverlap(Overlappable overlappable,
 			Vector<Overlap> overlaps) {
-		Area overlappableArea, targetArea;
+        Area overlappableArea, targetArea;
 		Rectangle boundingBoxTarget, boundingBoxOverlappable;
 
 		Shape intersectShape = intersectionComputation(overlappable);
