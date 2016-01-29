@@ -1,5 +1,7 @@
-package entities;
+package entities.bonus;
 
+
+import entities.bonus.AbstractBonus;
 
 import java.awt.*;
 
@@ -10,7 +12,7 @@ public class LifeBonus extends AbstractBonus {
     }
 
     @Override
-    String getImage() {
+    public String getImage() {
         return "assets/images/life.png";
     }
 }

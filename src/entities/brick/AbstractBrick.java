@@ -1,42 +1,42 @@
-package entities;
-
+package entities.brick;
 
 import gameframework.base.Drawable;
 import gameframework.base.DrawableImage;
-import gameframework.base.Overlappable;
 import gameframework.game.GameEntity;
 
 import java.awt.*;
 
-public abstract class AbstractBrick implements Drawable, Overlappable, GameEntity {
-    protected DrawableImage image = null;
-    int x, y;
+
+public abstract class AbstractBrick implements Drawable, GameEntity {
+    private DrawableImage image;
+    Point pos;
     int width;
     int height;
 
+
     public AbstractBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
         image = new DrawableImage(getImage(), defaultCanvas);
-        this.x = x;
-        this.y = y;
+        pos = new Point(x, y);
         this.width = width;
         this.height = height;
     }
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(image.getImage(), x, y, width, height, null);
+        g.drawImage(image.getImage(), pos.x, pos.y, width, height, null);
     }
 
-    @Override
     public Rectangle getBoundingBox() {
-        return (new Rectangle(x, y, width, height));
+        return (new Rectangle(pos.x, pos.y, width, height));
     }
 
-    @Override
     public Point getPosition() {
-        return (new Point(x, y));
+        return pos;
+    }
+
+    public void setPosition(Point point) {
+        this.pos = point;
     }
 
     public abstract String getImage();
-    public abstract int getValue();
 }

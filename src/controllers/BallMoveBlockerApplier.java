@@ -1,9 +1,8 @@
 package controllers;
 
 import entities.Ball;
-import entities.Bullet;
 import entities.InvisibleWall;
-import entities.UnbreakableBrick;
+import entities.brick.UnbreakableBrick;
 import gameframework.base.MoveStrategy;
 import gameframework.base.SpeedVector;
 import gameframework.game.GameMovableDriverDefaultImpl;

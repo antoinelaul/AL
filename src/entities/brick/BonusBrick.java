@@ -1,9 +1,9 @@
-package entities;
+package entities.brick;
 
 import java.awt.*;
 
 
-public class BonusBrick extends AbstractBrick {
+public class BonusBrick extends BreakableBrick {
     public BonusBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
         super(defaultCanvas, x, y, width, height);
     }

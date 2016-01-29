@@ -1,4 +1,6 @@
-package entities;
+package entities.bonus;
+
+import entities.bonus.AbstractBonus;
 
 import java.awt.*;
 
@@ -9,7 +11,7 @@ public class WeaponBonus extends AbstractBonus {
     }
 
     @Override
-    String getImage() {
+    public String getImage() {
         return "assets/images/weapon.png";
     }
 }

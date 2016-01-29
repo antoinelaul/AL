@@ -4,6 +4,10 @@ package models;
 import controllers.BallMoveBlockerApplier;
 import controllers.BreakoutOverlapRules;
 import entities.*;
+import entities.brick.BasicBrick;
+import entities.brick.BonusBrick;
+import entities.brick.ExplosionBrick;
+import entities.brick.UnbreakableBrick;
 import gameframework.base.ObservableValue;
 import gameframework.game.*;
 
@@ -15,9 +19,9 @@ import java.util.Scanner;
 public class BreakoutGameLevel extends GameLevelDefaultImpl {
     private final static int WIDTH = 640;
     private final static int HEIGHT = 480;
-    public static final int SPRITE_SIZE = 16;
-    public static final int SPRITE_OFFSET_X = 4;  // offset for placement.
-    public static final int SPRITE_OFFSET_Y = 3;  // offset for placement.
+    private final static int SPRITE_SIZE = 16;
+    private final static int SPRITE_OFFSET_X = 4;  // offset for placement.
+    private final static int SPRITE_OFFSET_Y = 3;  // offset for placement.
 
     private ObservableValue<Player> observablePlayer;
     private ObservableValue<Ball> observableBall;
@@ -80,7 +84,7 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
                         break;
 
                     case 2:
-                        universe.addGameEntity(new BreakableBrick(canvas,
+                        universe.addGameEntity(new BasicBrick(canvas,
                                 (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
                                 (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
                                 2 * SPRITE_SIZE, SPRITE_SIZE));
@@ -89,6 +93,14 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
 
                     case 3:
                         universe.addGameEntity(new BonusBrick(canvas,
+                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                                2 * SPRITE_SIZE, SPRITE_SIZE));
+                        totalBreakableWalls++;
+                        break;
+
+                    case 4:
+                        universe.addGameEntity(new ExplosionBrick(canvas,
                                 (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
                                 (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
                                 2 * SPRITE_SIZE, SPRITE_SIZE));

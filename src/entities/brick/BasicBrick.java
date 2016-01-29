@@ -1,12 +1,10 @@
-package entities;
-
-import gameframework.base.DrawableImage;
+package entities.brick;
 
 import java.awt.*;
 
-public class BreakableBrick extends AbstractBrick {
+public class BasicBrick extends BreakableBrick {
 
-	public BreakableBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
+	public BasicBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
         super(defaultCanvas, x, y, width, height);
     }
 

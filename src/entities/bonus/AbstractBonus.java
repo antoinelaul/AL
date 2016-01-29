@@ -1,4 +1,4 @@
-package entities;
+package entities.bonus;
 
 import gameframework.base.Drawable;
 import gameframework.base.DrawableImage;
@@ -32,5 +32,5 @@ abstract public class AbstractBonus extends GameMovable implements Drawable, Gam
         return new Rectangle(0, 0, size, size);
     }
 
-    abstract String getImage();
+    public abstract String getImage();
 }
