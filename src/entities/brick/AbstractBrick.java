@@ -7,7 +7,7 @@ import gameframework.game.GameEntity;
 import java.awt.*;
 
 
-public abstract class AbstractBrick implements Drawable, GameEntity {
+public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
     private DrawableImage image;
     Point pos;
     int width;
@@ -36,6 +36,16 @@ public abstract class AbstractBrick implements Drawable, GameEntity {
 
     public void setPosition(Point point) {
         this.pos = point;
+    }
+
+    @Override
+    public AbstractBrick clone() {
+        try {
+            return (AbstractBrick) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public abstract String getImage();

@@ -32,24 +32,25 @@ public abstract class GameLevelDefaultImpl extends Thread implements GameLevel {
 
 	// start of class Thread which calls the run method (see below) 
 	@Override
-	public void start() {  
-		endOfGame = g.endOfGame();
-		init();
+	public void start() {
+        endOfGame = g.endOfGame();
+        init();
 		super.start();
-		try {
+        try {
 			super.join();
-		} catch (InterruptedException e) {
+        } catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
+
+    }
 
 	@Override
 	public void run() {
-		stopGameLoop = false;
-		// main game loop
+        stopGameLoop = false;
+        // main game loop
 		long start;
 		while (!stopGameLoop && !this.isInterrupted()) {
-			start = new Date().getTime();
+            start = new Date().getTime();
 			gameBoard.paint();
 			universe.allOneStepMoves();
 			universe.processAllOverlaps();
@@ -61,7 +62,7 @@ public abstract class GameLevelDefaultImpl extends Thread implements GameLevel {
 				}
 			} catch (Exception e) {
 			}
-		}
+        }
     }
 
 	public void end() {

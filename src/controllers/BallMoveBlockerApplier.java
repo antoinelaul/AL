@@ -8,7 +8,6 @@ import gameframework.base.SpeedVector;
 import gameframework.game.GameMovableDriverDefaultImpl;
 import gameframework.game.IllegalMoveException;
 import gameframework.game.MoveBlockerRulesApplierDefaultImpl;
-import models.BreakoutBallDriver;
 import models.MoveStrategyLine;
 
 import java.awt.*;

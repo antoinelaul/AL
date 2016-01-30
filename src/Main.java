@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws IOException {
         BreakoutGame g = new BreakoutGame();
-        ArrayList<GameLevel> levels = new ArrayList<>();
+        ArrayList<BreakoutGameLevel> levels = new ArrayList<>();
 
         levels.add(new BreakoutGameLevel(g, "assets/levels/four.txt"));
 

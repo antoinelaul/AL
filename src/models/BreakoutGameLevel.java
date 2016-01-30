@@ -2,12 +2,10 @@ package models;
 
 
 import controllers.BallMoveBlockerApplier;
+import controllers.BreakoutBallDriver;
 import controllers.BreakoutOverlapRules;
 import entities.*;
-import entities.brick.BasicBrick;
-import entities.brick.BonusBrick;
-import entities.brick.ExplosionBrick;
-import entities.brick.UnbreakableBrick;
+import entities.brick.*;
 import gameframework.base.ObservableValue;
 import gameframework.game.*;
 
@@ -23,11 +21,12 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
     private final static int SPRITE_OFFSET_X = 4;  // offset for placement.
     private final static int SPRITE_OFFSET_Y = 3;  // offset for placement.
 
+    private static AbstractBrick bricks[];
+
     private ObservableValue<Player> observablePlayer;
     private ObservableValue<Ball> observableBall;
 
     private int values[][];
-
     private Canvas canvas;
     private int width;
     private int height;
@@ -48,6 +47,13 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
             values[cursor / width][cursor % width] = sc.nextInt();
             cursor++;
         }
+
+        bricks = new AbstractBrick[] {
+            new UnbreakableBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE),
+            new BasicBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE),
+            new BonusBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE),
+            new ExplosionBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE),
+        };
 
         observablePlayer = new ObservableValue<>(new Player(canvas, 4 * SPRITE_SIZE, SPRITE_SIZE));
         observableBall = new ObservableValue<>(new Ball(canvas, SPRITE_SIZE));
@@ -72,42 +78,19 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
         int totalBreakableWalls = 0;
 
         // Filling up the universe with basic non movable entities and inclusion in the universe
-        // Width is twice bigger than height.
-        for (int i = 0; i < height; ++i) {
-            for (int j = 0; j < width; ++j) {
-                switch (values[i][j]) {
-                    case 1:
-                        universe.addGameEntity(new UnbreakableBrick(canvas,
-                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
-                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
-                                2 * SPRITE_SIZE, SPRITE_SIZE));
-                        break;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                 if (values[i][j] != 0) {
+                    AbstractBrick brick = bricks[values[i][j] - 1].clone();
 
-                    case 2:
-                        universe.addGameEntity(new BasicBrick(canvas,
-                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
-                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
-                                2 * SPRITE_SIZE, SPRITE_SIZE));
+                    if (values[i][j] > 1)               // Brick 1 is Unbreakable.
                         totalBreakableWalls++;
-                        break;
 
-                    case 3:
-                        universe.addGameEntity(new BonusBrick(canvas,
-                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
-                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
-                                2 * SPRITE_SIZE, SPRITE_SIZE));
-                        totalBreakableWalls++;
-                        break;
+                    brick.setPosition(new Point(
+                            (2 * j  + SPRITE_OFFSET_X) * SPRITE_SIZE,           // x
+                            (i      + SPRITE_OFFSET_Y) * SPRITE_SIZE));         // y
 
-                    case 4:
-                        universe.addGameEntity(new ExplosionBrick(canvas,
-                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
-                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
-                                2 * SPRITE_SIZE, SPRITE_SIZE));
-                        totalBreakableWalls++;
-                        break;
-
-                    default: break;
+                    universe.addGameEntity(brick);
                 }
             }
         }

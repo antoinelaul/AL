@@ -1,4 +1,4 @@
-package models;
+package controllers;
 
 import gameframework.base.Movable;
 import gameframework.base.MoveStrategy;

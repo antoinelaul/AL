@@ -12,7 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -30,8 +32,9 @@ public class BreakoutGame implements Game, Observer {
     private Frame frame;
     private CanvasDefaultImpl canvas;
 
-    private ArrayList<GameLevel> gameLevels;
-    private GameLevelDefaultImpl currentPlayedLevel = null;
+    private ArrayList<BreakoutGameLevel> gameLevels;
+
+    private BreakoutGameLevel currentPlayedLevel = null;
     private int levelNumber;
 
     protected Label lifeText, scoreText;
@@ -106,6 +109,7 @@ public class BreakoutGame implements Game, Observer {
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 start();
+                // frame.requestFocus();
             }
         });
         quit.addActionListener(new ActionListener() {
@@ -167,19 +171,18 @@ public class BreakoutGame implements Game, Observer {
         life[0].setValue(NUMBER_OF_LIVES);
         score[0].setValue(0);
 
-        for (GameLevel level: gameLevels) {
+        for (BreakoutGameLevel level: gameLevels) {
             endOfGame = new ObservableValue<Boolean>(false);
             endOfGame.addObserver(this);
 
             try {
                 if (currentPlayedLevel != null && currentPlayedLevel.isAlive()) {
                     currentPlayedLevel.interrupt();
-                    currentPlayedLevel = null;
+                    currentPlayedLevel.end();
                 }
 
-                currentPlayedLevel = (GameLevelDefaultImpl) level;
-                currentLevelValue.setText(String.valueOf(levelNumber + 1));
-                ++levelNumber;
+                currentPlayedLevel = level;
+                currentLevelValue.setText(String.valueOf(++levelNumber));
 
                 currentPlayedLevel.start();
                 currentPlayedLevel.join();
@@ -223,7 +226,7 @@ public class BreakoutGame implements Game, Observer {
         return endOfGame;
     }
 
-    public void setLevels(ArrayList<GameLevel> levels) {
+    public void setLevels(ArrayList<BreakoutGameLevel> levels) {
         gameLevels = levels;
     }
 
@@ -244,20 +247,14 @@ public class BreakoutGame implements Game, Observer {
                     if (lives == 0) {
                         currentPlayedLevel.interrupt();
                         currentPlayedLevel.end();
-
-                        JOptionPane.showMessageDialog(frame, "You lost... sad !",
-                                "Message for loosers", JOptionPane.PLAIN_MESSAGE);
                     }
                 }
             }
 
             for (ObservableValue<Integer> scoreObservable : score) {
-                if (o == scoreObservable) {
-                    scoreValue
-                            .setText(Integer
-                                    .toString(((ObservableValue<Integer>) o)
-                                            .getValue()));
-                }
+                if (o == scoreObservable)
+                    scoreValue.setText(
+                            Integer.toString(((ObservableValue<Integer>) o).getValue()));
             }
         }
     }

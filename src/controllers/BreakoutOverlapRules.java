@@ -15,7 +15,6 @@ import gameframework.base.SpeedVector;
 import gameframework.game.GameMovableDriverDefaultImpl;
 import gameframework.game.GameUniverse;
 import gameframework.game.OverlapRulesApplierDefaultImpl;
-import models.BreakoutBallDriver;
 import models.MoveStrategyLine;
 
 import java.awt.*;
@@ -286,6 +285,10 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         bonus.setPosition(new Point(
                 brickPosition.x + (bbb.width - bonusBoundingBox.width) / 2,     // Center explosion according the brick.
                 brickPosition.y + (bbb.height - bonusBoundingBox.height) / 2));
+
+        universe.addGameEntity(new BasicBrick(canvas,                           // To trigger explosion.
+                brickPosition.x, brickPosition.y,
+                SPRITE_SIZE * 2, SPRITE_SIZE));
         universe.addGameEntity(bonus);
     }
 }

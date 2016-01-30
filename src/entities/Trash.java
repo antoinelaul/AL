@@ -48,4 +48,76 @@ public class Trash {
             ballStr = new MoveStrategyLine(-p.x, -p.y);
         }*/
     }
+
+    public void placement() {
+                       /*
+               AbstractBrick brick = null;
+               switch(values[i][j]) {
+                    case 1:
+                        brick = new UnbreakableBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE);
+                        break;
+
+                    case 2:
+                        brick = new BasicBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE);
+                        totalBreakableWalls++;
+                        break;
+
+                    case 3:
+                        brick = new BonusBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE);
+                        totalBreakableWalls++;
+                        break;
+
+                    case 4:
+                        brick = new ExplosionBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE);
+                        totalBreakableWalls++;
+                        break;
+
+                    default:
+                        brick = new BasicBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE);
+                        totalBreakableWalls++;
+                        break;
+                }
+
+                brick.setPosition(new Point(
+                        (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,        // x
+                        (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE));      // y
+
+                universe.addGameEntity(brick); */
+
+
+                /*switch (values[i][j]) {
+                    case 1:
+                        universe.addGameEntity(new UnbreakableBrick(canvas,
+                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                                2 * SPRITE_SIZE, SPRITE_SIZE));
+                        break;
+
+                    case 2:
+                        universe.addGameEntity(new BasicBrick(canvas,
+                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                                2 * SPRITE_SIZE, SPRITE_SIZE));
+                        totalBreakableWalls++;
+                        break;
+
+                    case 3:
+                        universe.addGameEntity(new BonusBrick(canvas,
+                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                                2 * SPRITE_SIZE, SPRITE_SIZE));
+                        totalBreakableWalls++;
+                        break;
+
+                    case 4:
+                        universe.addGameEntity(new ExplosionBrick(canvas,
+                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,  // x
+                                (i     + SPRITE_OFFSET_Y) * SPRITE_SIZE,  // y
+                                2 * SPRITE_SIZE, SPRITE_SIZE));
+                        totalBreakableWalls++;
+                        break;
+
+                    default: break;
+                }*/
+    }
 }
