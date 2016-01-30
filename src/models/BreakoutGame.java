@@ -13,10 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 
 public class BreakoutGame implements Game, Observer {
@@ -33,7 +30,8 @@ public class BreakoutGame implements Game, Observer {
     private CanvasDefaultImpl canvas;
 
     private String[] gameLevelDefinitions;
-    private ArrayList<BreakoutGameLevel> gameLevels;
+  //  private ArrayList<BreakoutGameLevel> gameLevels;
+    private ArrayDeque<BreakoutGameLevel> gameLevels = new ArrayDeque<>();
     private BreakoutGameLevel currentPlayedLevel = null;
     private int levelNumber;
 
@@ -158,7 +156,7 @@ public class BreakoutGame implements Game, Observer {
         life[0].setValue(NUMBER_OF_LIVES);
         score[0].setValue(0);
 
-        gameLevels = new ArrayList<>();
+        gameLevels.clear();
         for (String levelDefinition: gameLevelDefinitions) {
             try {
                 gameLevels.add(new BreakoutGameLevel(this, levelDefinition));
@@ -180,14 +178,14 @@ public class BreakoutGame implements Game, Observer {
     private void loop() throws InterruptedException {
         while (true) {
             synchronized (this) {
-                while (levelNumber >= gameLevels.size()) wait();    // If there is no level to launch, just wait.
+                while (gameLevels.isEmpty()) wait();    // If there is no level to launch, just wait.
             }
 
             endOfGame = new ObservableValue<Boolean>(false);
             endOfGame.addObserver(this);
 
             try {
-                currentPlayedLevel = gameLevels.get(levelNumber);
+                currentPlayedLevel = gameLevels.pop();
                 currentLevelValue.setText(String.valueOf(++levelNumber));
 
                 currentPlayedLevel.start();

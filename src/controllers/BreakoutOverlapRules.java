@@ -155,16 +155,15 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
      * Collision between ball and brick handling.
      */
     public void overlapRule(Ball ball, BreakableBrick brick) {
-        SpeedVector speedVector = ball.getSpeedVector();
-        Point point = speedVector.getDirection();
-        MoveStrategyLine ballStr = new MoveStrategyLine(point.x, point.y);
-
+        Point ballPosition = ball.getPosition();
+        Point direction = ball.getSpeedVector().getDirection();
+        MoveStrategyLine ballStr = new MoveStrategyLine(direction.x, direction.y);
 
         if (brick.getPosition().getX() == ball.getPosition().getX())
-            ballStr = new MoveStrategyLine(point.x, -point.y);
+            ballStr = new MoveStrategyLine(direction.x, -direction.y);
 
         else if (brick.getPosition().getY() == ball.getPosition().getY())
-            ballStr = new MoveStrategyLine(-point.x, point.y);
+            ballStr = new MoveStrategyLine(-direction.x, direction.y);
 
         GameMovableDriverDefaultImpl ballDriver = (GameMovableDriverDefaultImpl) ball.getDriver();
         ballDriver.setStrategy(ballStr);
@@ -327,12 +326,6 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         bonus.setPosition(new Point(
                 brickPosition.x + (bbb.width - bonusBoundingBox.width) / 2,     // Center explosion according the brick.
                 brickPosition.y + (bbb.height - bonusBoundingBox.height) / 2));
-
-        // TODO add basic brick to trigger explosion in any case.
-        /* totalBreakableWalls++;
-        universe.addGameEntity(new BasicBrick(canvas,                           // To trigger explosion.
-                brickPosition.x, brickPosition.y,
-                SPRITE_SIZE * 2, SPRITE_SIZE)); */
         universe.addGameEntity(bonus);
     }
 }
