@@ -1,8 +1,12 @@
 package controllers;
 
 import entities.*;
+import entities.Image;
 import entities.bonus.*;
-import entities.brick.*;
+import entities.brick.BasicBrick;
+import entities.brick.BonusBrick;
+import entities.brick.BreakableBrick;
+import entities.brick.ExplosionBrick;
 import gameframework.base.ObservableValue;
 import gameframework.base.Overlap;
 import gameframework.base.SpeedVector;
@@ -13,8 +17,10 @@ import gameframework.game.OverlapRulesApplierDefaultImpl;
 import models.MoveStrategyLine;
 
 import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.Vector;
 
 
 public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
@@ -135,6 +141,15 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         explosionHandler(bricks.get(rand.nextInt(bricks.size())));
     }
 
+    public void overlapRule(Player player, MysteriousBonus bonus) {
+        overlapRule(player, (AbstractBonus) bonus);
+
+        Point position = player.getPosition();
+        entities.Image image = new Image(canvas, "assets/images/mysterious.png",
+                0, position.y - 150, 150, 150);
+        universe.addGameEntity(image);
+    }
+
 
     /**
      * Collision between ball and brick handling.
@@ -241,13 +256,21 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
 
 
     /**
-     * Entities are removed when they reach end line.
+     * Entities are removed when they reach end line (except the ball).
      */
     public void overlapRule(LifeBonus bonus, EndLine line) {
         universe.removeGameEntity(bonus);
     }
 
     public void overlapRule(WeaponBonus bonus, EndLine line) {
+        universe.removeGameEntity(bonus);
+    }
+
+    public void overlapRule(BombBonus bonus, EndLine line) {
+        universe.removeGameEntity(bonus);
+    }
+
+    public void overlapRule(MysteriousBonus bonus, EndLine line) {
         universe.removeGameEntity(bonus);
     }
 
@@ -278,13 +301,13 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         if (rand.nextInt(4) == 0)
             bonus = new LifeBonus(canvas, SPRITE_SIZE * 2);
 
-        else {
-            if (rand.nextInt(2) == 0)
-                bonus = new WeaponBonus(canvas, SPRITE_SIZE * 2);
+        else if (rand.nextInt(10) == 0)                         // Really rare.
+            bonus = new MysteriousBonus(canvas, SPRITE_SIZE * 2);
 
-            else
-                bonus = new BombBonus(canvas, SPRITE_SIZE * 2);
-        }
+        else if (rand.nextInt(2) == 0)
+                bonus = new WeaponBonus(canvas, SPRITE_SIZE * 2);
+        else
+            bonus = new BombBonus(canvas, SPRITE_SIZE * 2);
 
         bonus.setPosition(position);
         ((GameMovableDriverDefaultImpl) bonus.getDriver()).setStrategy(new MoveStrategyLine(0, 1));
@@ -305,10 +328,11 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
                 brickPosition.x + (bbb.width - bonusBoundingBox.width) / 2,     // Center explosion according the brick.
                 brickPosition.y + (bbb.height - bonusBoundingBox.height) / 2));
 
+        // TODO add basic brick to trigger explosion in any case.
+        /* totalBreakableWalls++;
         universe.addGameEntity(new BasicBrick(canvas,                           // To trigger explosion.
                 brickPosition.x, brickPosition.y,
-                SPRITE_SIZE * 2, SPRITE_SIZE));
+                SPRITE_SIZE * 2, SPRITE_SIZE)); */
         universe.addGameEntity(bonus);
-        totalBreakableWalls++;
     }
 }
