@@ -32,8 +32,8 @@ public class BreakoutGame implements Game, Observer {
     private Frame frame;
     private CanvasDefaultImpl canvas;
 
+    private String[] gameLevelDefinitions;
     private ArrayList<BreakoutGameLevel> gameLevels;
-
     private BreakoutGameLevel currentPlayedLevel = null;
     private int levelNumber;
 
@@ -76,18 +76,10 @@ public class BreakoutGame implements Game, Observer {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             SwingUtilities.updateComponentTreeUI(frame);
         }
-        catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+        catch (ClassNotFoundException e) { }
+        catch (InstantiationException e) { }
+        catch (IllegalAccessException e) { }
+        catch (UnsupportedLookAndFeelException e) { }
 
         frame.pack();
         frame.setVisible(true);
@@ -108,8 +100,7 @@ public class BreakoutGame implements Game, Observer {
 
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                start();
-                // frame.requestFocus();
+                reset();
             }
         });
         quit.addActionListener(new ActionListener() {
@@ -140,9 +131,9 @@ public class BreakoutGame implements Game, Observer {
         GridBagLayout layout = new GridBagLayout();
         
         statusBar.setLayout(layout);
-        lifeValue = new Label(Integer.toString(life[0].getValue()));
-        scoreValue = new Label(Integer.toString(score[0].getValue()));
-        currentLevelValue = new Label(Integer.toString(levelNumber));
+        lifeValue = new Label(life[0].getValue().toString());
+        scoreValue = new Label(score[0].getValue().toString());
+        currentLevelValue = new Label(String.valueOf(levelNumber));
 
         lifeValue.setPreferredSize(new Dimension(50, 10));
         scoreValue.setPreferredSize(new Dimension(100, 10));
@@ -157,13 +148,9 @@ public class BreakoutGame implements Game, Observer {
         return statusBar;
     }
 
-    @Override
-    public Canvas getCanvas() {
-        return canvas;
-    }
 
-    @Override
-    public void start() {
+    // Re-init every levels, according their definition.
+    private synchronized void reset() {
         levelNumber = 0;
 
         score[0].addObserver(this);
@@ -171,24 +158,53 @@ public class BreakoutGame implements Game, Observer {
         life[0].setValue(NUMBER_OF_LIVES);
         score[0].setValue(0);
 
-        for (BreakoutGameLevel level: gameLevels) {
+        gameLevels = new ArrayList<>();
+        for (String levelDefinition: gameLevelDefinitions) {
+            try {
+                gameLevels.add(new BreakoutGameLevel(this, levelDefinition));
+            }
+            catch (IOException e) {
+                System.err.println(levelDefinition + " doesn't exist");
+            }
+        }
+
+        if (currentPlayedLevel != null && currentPlayedLevel.isAlive()) {
+            currentPlayedLevel.interrupt();
+            currentPlayedLevel.end();
+        }
+
+        notifyAll();        // Ok, there are new levels, loop can continue if it was stopped.
+    }
+
+    // Loop that launch threads.
+    private void loop() throws InterruptedException {
+        while (true) {
+            synchronized (this) {
+                while (levelNumber >= gameLevels.size()) wait();    // If there is no level to launch, just wait.
+            }
+
             endOfGame = new ObservableValue<Boolean>(false);
             endOfGame.addObserver(this);
 
             try {
-                if (currentPlayedLevel != null && currentPlayedLevel.isAlive()) {
-                    currentPlayedLevel.interrupt();
-                    currentPlayedLevel.end();
-                }
-
-                currentPlayedLevel = level;
+                currentPlayedLevel = gameLevels.get(levelNumber);
                 currentLevelValue.setText(String.valueOf(++levelNumber));
 
                 currentPlayedLevel.start();
                 currentPlayedLevel.join();
             }
-            catch (Exception e) { }
+            catch (InterruptedException e) { }
         }
+    }
+
+    @Override
+    public void start() {
+        reset();            // Fill up thread list.
+
+        try {
+            loop();         // Launch loop that executes threads.
+        }
+        catch (InterruptedException e) { }
     }
 
     @Override
@@ -226,8 +242,13 @@ public class BreakoutGame implements Game, Observer {
         return endOfGame;
     }
 
-    public void setLevels(ArrayList<BreakoutGameLevel> levels) {
-        gameLevels = levels;
+    @Override
+    public Canvas getCanvas() {
+        return canvas;
+    }
+
+    public void setLevels(String[] levels) {
+        gameLevelDefinitions = levels;
     }
 
     @Override
