@@ -186,6 +186,11 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         explosionHandler(brick);
     }
 
+    // Avoid infinite display of explosion.
+    public void overlapRule(Ball ball, ExplosionBonus bonus) {
+        universe.removeGameEntity(bonus);
+    }
+
 
     /**
      * Interaction between bullets and bricks handling.
@@ -286,9 +291,8 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         universe.removeGameEntity(brick);
         wallBroken++;
 
-        if (wallBroken >= totalBreakableWalls) {
+        if (wallBroken >= totalBreakableWalls)
             endOfGame.setValue(true);
-        }
     }
 
 
