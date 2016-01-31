@@ -57,7 +57,12 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
     @Override
     public void applyOverlapRules(Vector<Overlap> overlappables) {
         Player p = observablePlayer.getValue();
+        Ball b = observableBall.getValue();
         if (p.isFiring()) playerFire(p);
+        if (!b.isStillOnFire()) {
+            b.changeImage(canvas);
+            b.setOffFire();
+        }
 
         super.applyOverlapRules(overlappables);
     }
@@ -126,6 +131,19 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         player.setTimeBullet(15);
     }
 
+    public void overlapRule(Player player, FireBallBonus bonus) {
+        overlapRule(player, (AbstractBonus) bonus);
+        Ball ball = observableBall.getValue();
+        Point direction = ball.getSpeedVector().getDirection();
+        MoveStrategyLine ballStr = new MoveStrategyLine(direction.x, direction.y);
+        GameMovableDriverDefaultImpl ballDriver = (GameMovableDriverDefaultImpl) ball.getDriver();
+        ballDriver.setStrategy(ballStr);
+        ball.setOnFire();
+        ball.setTimeFire(100);
+        ball.changeImage(canvas);
+
+    }
+
     public void overlapRule(Player player, BombBonus bonus) {
         overlapRule(player, (AbstractBonus) bonus);
 
@@ -156,14 +174,55 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
      */
     public void overlapRule(Ball ball, BreakableBrick brick) {
         Point ballPosition = ball.getPosition();
+        Point brickPosition = brick.getPosition();
         Point direction = ball.getSpeedVector().getDirection();
         MoveStrategyLine ballStr = new MoveStrategyLine(direction.x, direction.y);
 
-        if (brick.getPosition().getX() == ball.getPosition().getX())
-            ballStr = new MoveStrategyLine(direction.x, -direction.y);
+        //Brick position
+        Point brickLeftUpCorner = brickPosition;
+        Point brickLeftDownCorner = new Point(brickPosition.x, brickPosition.y + brick.getHeight());
+        Point brickRightUpCorner = new Point(brickPosition.x + brick.getWidth(), brickPosition.y);
+        Point brickRightDownCorner = new Point(
+                brickPosition.x + brick.getWidth(),
+                brickPosition.y + brick.getHeight()
+        );
 
-        else if (brick.getPosition().getY() == ball.getPosition().getY())
-            ballStr = new MoveStrategyLine(-direction.x, direction.y);
+        //Ball position
+        int sizeBall = ball.getSize();
+        Point ballUpMiddle = new Point(ballPosition.x + sizeBall/2, ballPosition.y);
+        Point ballDownMiddle = new Point(ballPosition.x + sizeBall/2, ballPosition.y + sizeBall);
+        Point ballRightMiddle = new Point(ballPosition.x + sizeBall, ballPosition.y + sizeBall/2);
+        Point ballLeftMiddle = new Point(ballPosition.x, ballPosition.y + sizeBall/2);
+
+        //Sout to understrand the behavior
+        System.out.println("FUCKING HIT BITCH");
+        System.out.println();
+        System.out.println("leDo/up/riDo");
+        System.out.println("" + brickLeftDownCorner + " / " + ballUpMiddle + " / " + brickRightDownCorner);
+        System.out.println("leUp/down/riUp");
+        System.out.println("" + brickLeftUpCorner + " / " + ballDownMiddle + " / " + brickRightUpCorner);
+        System.out.println("leUp/right/leDo");
+        System.out.println("" + brickLeftUpCorner + " / " + ballRightMiddle + " / " + brickLeftDownCorner);
+        System.out.println("riDo/left/riUp");
+        System.out.println("" + brickRightDownCorner + " / " + ballLeftMiddle + " / " + brickRightUpCorner);
+        System.out.println();
+
+        if(!ball.isOnFire()) {
+            if(((brickLeftDownCorner.x <= ballUpMiddle.x) &&
+                    (ballUpMiddle.x <= brickRightDownCorner.x )) ||
+                    ((brickLeftUpCorner.x <= ballDownMiddle.x) &&
+                            (ballDownMiddle.x <= brickRightUpCorner.x))
+                    ){
+                ballStr = new MoveStrategyLine(direction.x, -direction.y);
+            }
+            else if(((brickLeftUpCorner.y <= ballRightMiddle.y) &&
+                    (ballRightMiddle.y <= brickLeftDownCorner.y)) ||
+                    ((brickRightUpCorner.y <= ballLeftMiddle.y) &&
+                            (ballLeftMiddle.y <= brickRightDownCorner.y))
+                    ){
+                ballStr = new MoveStrategyLine(-direction.x, direction.y);
+            }
+        }
 
         GameMovableDriverDefaultImpl ballDriver = (GameMovableDriverDefaultImpl) ball.getDriver();
         ballDriver.setStrategy(ballStr);
@@ -190,6 +249,8 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
     public void overlapRule(Ball ball, ExplosionBonus bonus) {
         universe.removeGameEntity(bonus);
     }
+
+
 
 
     /**
@@ -282,6 +343,9 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         universe.removeGameEntity(bullet);
     }
 
+    public void overlapRule(FireBallBonus bonus, EndLine line) {
+        universe.removeGameEntity(bonus);
+    }
 
     /**
      * End game handling.
@@ -308,7 +372,11 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
             bonus = new MysteriousBonus(canvas, SPRITE_SIZE * 2);
 
         else if (rand.nextInt(2) == 0)
-                bonus = new WeaponBonus(canvas, SPRITE_SIZE * 2);
+            bonus = new WeaponBonus(canvas, SPRITE_SIZE * 2);
+
+        else if (rand.nextInt(3) == 0)
+            bonus = new FireBallBonus(canvas, SPRITE_SIZE * 2);
+
         else
             bonus = new BombBonus(canvas, SPRITE_SIZE * 2);
 

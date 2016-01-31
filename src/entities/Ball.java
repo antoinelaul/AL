@@ -11,6 +11,8 @@ import java.awt.*;
 public class Ball extends GameMovable implements Drawable, GameEntity, Overlappable {
     protected static DrawableImage image;
 
+    private boolean onFire = false;
+    private int timeOnFire = 0;
     private int size;
 
 
@@ -27,6 +29,7 @@ public class Ball extends GameMovable implements Drawable, GameEntity, Overlappa
 
     @Override
     public void oneStepMoveAddedBehavior() {
+        timeOnFire--;
     }
 
     @Override
@@ -34,4 +37,30 @@ public class Ball extends GameMovable implements Drawable, GameEntity, Overlappa
         return new Rectangle(0, 0, size, size);
 
     }
+
+
+    /**
+     * To change ball asset according ball state
+     */
+    public void changeImage(Canvas canvas){
+        if(this.onFire)
+            this.image = new DrawableImage("assets/images/fireball.png", canvas);
+        else
+            this.image = new DrawableImage("assets/images/ball.png", canvas);
+    }
+
+    /**
+     * Methods about ball fire state
+     */
+    public void setOnFire(){ this.onFire = true;}
+    public void setOffFire(){ this.onFire = false;}
+    public boolean isStillOnFire() { return timeOnFire > 0;}
+    public boolean isOnFire(){
+        return this.onFire;
+    }
+    public void setTimeFire(int time) {
+        timeOnFire = time;
+    }
+
+    public int getSize() {return this.size; }
 }

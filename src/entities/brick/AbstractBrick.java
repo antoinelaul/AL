@@ -10,8 +10,8 @@ import java.awt.*;
 public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
     private DrawableImage image;
     Point pos;
-    int width;
-    int height;
+    private int width;
+    private int height;
 
 
     public AbstractBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
@@ -49,4 +49,7 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
     }
 
     public abstract String getImage();
+
+    public int getWidth() {return this.width; }
+    public int getHeight() {return this.height; }
 }

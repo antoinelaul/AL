@@ -47,6 +47,17 @@ public class Trash {
         }else{
             ballStr = new MoveStrategyLine(-p.x, -p.y);
         }*/
+
+          /*
+            if (brick.getPosition().getX() + brick.getBoundingBox().getWidth()
+                    == ball.getPosition().getX() + ball.getBoundingBox().getWidth()) {
+                ballStr = new MoveStrategyLine(direction.x, -direction.y);
+            }
+            else if (brick.getPosition().getY() + brick.getBoundingBox().getHeight()
+                    == ball.getPosition().getY() + ball.getBoundingBox().getHeight()) {
+                ballStr = new MoveStrategyLine(-direction.x, direction.y);
+            }
+            */
     }
 
     public void placement() {
