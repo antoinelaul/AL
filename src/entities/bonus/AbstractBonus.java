@@ -9,7 +9,8 @@ import gameframework.game.GameMovable;
 import java.awt.*;
 
 
-abstract public class AbstractBonus extends GameMovable implements Drawable, GameEntity, Overlappable {
+abstract public class AbstractBonus extends GameMovable implements Drawable, GameEntity,
+        Overlappable, Cloneable {
     protected DrawableImage image;
     private int size;
 
@@ -34,4 +35,13 @@ abstract public class AbstractBonus extends GameMovable implements Drawable, Gam
     }
 
     public abstract String getImage();
+
+    @Override
+    public AbstractBonus clone() {
+        try {
+            return (AbstractBonus) super.clone();
+        } catch (CloneNotSupportedException e) { }
+
+        return null;
+    }
 }

@@ -12,7 +12,7 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
     private DrawableImage image;
 
     // Just an optimization to shared brick images according given paths.
-    private class Asset {
+    private static class Asset {
         public String path;
         public DrawableImage image;
 
@@ -22,7 +22,31 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
         }
     }
 
-    private static ArrayList<Asset> assets = new ArrayList<>();
+    private static class AssetCollection {
+        private ArrayList<Asset> assets = new ArrayList<>();
+
+        public int add(String filename, Canvas canvas) {
+            Asset asset = null;
+            for (Asset a: assets)
+                if (a.path.equals(filename)) {
+                    asset = a;
+                    break;
+                }
+
+            if (asset == null) {
+                assets.add(new Asset(filename, new DrawableImage(filename, canvas)));
+                return assets.size() - 1;
+            }
+            else
+                return assets.indexOf(asset);
+        }
+
+        public DrawableImage get(int index) {
+            return assets.get(index).image;
+        }
+    }
+
+    private static AssetCollection assets = new AssetCollection();
 
     Point pos;
     private int width;
@@ -31,19 +55,7 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
 
 
     public AbstractBrick(Canvas canvas, int x, int y, int width, int height, String filename) {
-        Asset asset = null;
-        for (Asset a: assets)
-            if (a.path.equals(filename)) {
-                asset = a;
-                break;
-            }
-
-        if (asset == null) {
-            this.indexAsset = assets.size();
-            assets.add(new Asset(filename, new DrawableImage(filename, canvas)));
-        }
-        else
-            this.indexAsset = assets.indexOf(asset);
+        this.indexAsset = assets.add(filename, canvas);
 
         this.pos = new Point(x, y);
         this.width = width;
@@ -60,7 +72,7 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(assets.get(indexAsset).image.getImage(), pos.x, pos.y, width, height, null);
+        g.drawImage(assets.get(indexAsset).getImage(), pos.x, pos.y, width, height, null);
         // g.drawImage(image.getImage(), pos.x, pos.y, width, height, null);
     }
 

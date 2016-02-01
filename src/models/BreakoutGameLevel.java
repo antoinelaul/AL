@@ -48,6 +48,7 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
             cursor++;
         }
 
+        // Bricks to clone for level configuration.
         bricks = new AbstractBrick[] {
             new UnbreakableBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE),
             new BasicBrick(canvas, 0, 0, SPRITE_SIZE * 2, SPRITE_SIZE),

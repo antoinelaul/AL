@@ -26,6 +26,7 @@ import java.util.Vector;
 public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
     private static final int SPRITE_SIZE = 16;
     private static final Random rand = new Random();
+    private static AbstractBonus bonus[];
 
     private Canvas canvas;
     private GameUniverse universe;
@@ -48,6 +49,16 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         this.endOfGame = endOfGame;
         this.observablePlayer = player;
         this.observableBall = ball;
+
+        // Bonus to clone.
+        bonus = new AbstractBonus[] {
+                new BombBonus(canvas, SPRITE_SIZE * 2),         // Same chance to appear.
+                new WeaponBonus(canvas, SPRITE_SIZE * 2),
+                new FireBallBonus(canvas, SPRITE_SIZE * 2),
+
+                new LifeBonus(canvas, SPRITE_SIZE * 2),         // Rarer.
+                new MysteriousBonus(canvas, SPRITE_SIZE * 2),   // Very rarer.
+        };
     }
 
     public void setTotalBreakableWalls(int totalBkw) {
@@ -359,25 +370,11 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
      * Choose a bonus in the possible ones. Put its start point at the given position.
      */
     private void bonusHandler(Point position) {
-        AbstractBonus bonus;
-        if (rand.nextInt(4) == 0)
-            bonus = new LifeBonus(canvas, SPRITE_SIZE * 2);
+        AbstractBonus b = bonus[randomBonus()].clone();
 
-        else if (rand.nextInt(10) == 0)                         // Really rare.
-            bonus = new MysteriousBonus(canvas, SPRITE_SIZE * 2);
-
-        else if (rand.nextInt(2) == 0)
-            bonus = new WeaponBonus(canvas, SPRITE_SIZE * 2);
-
-        else if (rand.nextInt(3) == 0)
-            bonus = new FireBallBonus(canvas, SPRITE_SIZE * 2);
-
-        else
-            bonus = new BombBonus(canvas, SPRITE_SIZE * 2);
-
-        bonus.setPosition(position);
-        ((GameMovableDriverDefaultImpl) bonus.getDriver()).setStrategy(new MoveStrategyLine(0, 1));
-        universe.addGameEntity(bonus);
+        b.setPosition(position);
+        ((GameMovableDriverDefaultImpl) b.getDriver()).setStrategy(new MoveStrategyLine(0, 1));
+        universe.addGameEntity(b);
     }
 
 
@@ -394,5 +391,15 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
                 brickPosition.x + (bbb.width - bonusBoundingBox.width) / 2,     // Center explosion according the brick.
                 brickPosition.y + (bbb.height - bonusBoundingBox.height) / 2));
         universe.addGameEntity(bonus);
+    }
+
+
+    private int randomBonus() {
+        int alea = rand.nextInt(100);
+        System.out.println(alea);
+
+        if (alea <= 75) return rand.nextInt(3); // 75% of time, a normal bonus (bomb, weapon, fireball.
+        else if (alea <= 98) return 3;          // Life bonus.
+        else return 4;                          // Mysterious bonus, very difficult to obtain.
     }
 }

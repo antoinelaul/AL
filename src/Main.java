@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BreakoutGame g = new BreakoutGame();
         g.setLevels(new String[] {
-                "assets/levels/three.txt",
+                "assets/levels/five.txt",
         });
 
         g.start();
