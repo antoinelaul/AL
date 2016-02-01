@@ -32,24 +32,25 @@ public class Ball extends GameMovable implements Drawable, GameEntity, Overlappa
     @Override
     public void oneStepMoveAddedBehavior() {
         timeOnFire--;
-        if(timeOnFire <= 0) {
-            changeImage(this.canvas);
+        if (timeOnFire == 0) changeImage();
+
+        /* if(timeOnFire <= 0) {    // Here, the image is re affected every time... not so good for performances.
+            changeImage();
             setOffFire();
-        }
+        } */
     }
 
     @Override
     public Rectangle getBoundingBox() {
         return new Rectangle(0, 0, size, size);
-
     }
 
 
     /**
      * To change ball asset according ball state
      */
-    public void changeImage(Canvas canvas){
-        if(this.onFire)
+     public void changeImage(){
+        if (this.isOnFire())
             this.image = new DrawableImage("assets/images/fireball.png", canvas);
         else
             this.image = new DrawableImage("assets/images/ball.png", canvas);
@@ -58,12 +59,18 @@ public class Ball extends GameMovable implements Drawable, GameEntity, Overlappa
     /**
      * Methods about ball fire state
      */
-    public void setOnFire(){ this.onFire = true;}
-    public void setOffFire(){ this.onFire = false;}
-    public boolean isStillOnFire() { return timeOnFire > 0;}
+    // public void setOnFire(){ this.onFire = true;}
+    // public void setOffFire(){ this.onFire = false;}
+
+    /* public boolean isStillOnFire() {
+        return timeOnFire > 0;
+    } */
+
     public boolean isOnFire(){
-        return this.onFire;
+        // return this.onFire;
+        return timeOnFire > 0;
     }
+
     public void setTimeFire(int time) {
         timeOnFire = time;
     }

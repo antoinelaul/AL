@@ -58,6 +58,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
     public void applyOverlapRules(Vector<Overlap> overlappables) {
         Player p = observablePlayer.getValue();
         if (p.isFiring()) playerFire(p);
+
         super.applyOverlapRules(overlappables);
     }
 
@@ -127,15 +128,16 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
 
     public void overlapRule(Player player, FireBallBonus bonus) {
         overlapRule(player, (AbstractBonus) bonus);
-        Ball ball = observableBall.getValue();
-        Point direction = ball.getSpeedVector().getDirection();
-        MoveStrategyLine ballStr = new MoveStrategyLine(direction.x, direction.y);
-        GameMovableDriverDefaultImpl ballDriver = (GameMovableDriverDefaultImpl) ball.getDriver();
-        ballDriver.setStrategy(ballStr);
-        ball.setOnFire();
-        ball.setTimeFire(100);
-        ball.changeImage(canvas);
 
+        Ball ball = observableBall.getValue();
+        // It works without this code
+        // Point direction = ball.getSpeedVector().getDirection();
+        // MoveStrategyLine ballStr = new MoveStrategyLine(direction.x, direction.y);
+        // GameMovableDriverDefaultImpl ballDriver = (GameMovableDriverDefaultImpl) ball.getDriver();
+        // ballDriver.setStrategy(ballStr);
+        // ball.setOnFire();
+        ball.setTimeFire(100);
+        ball.changeImage();
     }
 
     public void overlapRule(Player player, BombBonus bonus) {
