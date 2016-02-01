@@ -5,20 +5,21 @@ import gameframework.game.MoveBlocker;
 
 import java.awt.*;
 
-public class InvisibleWall implements MoveBlocker, GameEntity {
+
+public class InvisibleWall implements MoveBlocker, GameEntity, Blocker {
     int x, y;
 	int width;
     int height;
-    boolean hztl;
+    boolean horizontal;
 
 
-	public InvisibleWall(int _x, int _y, int w, int h, boolean hztl) {
+	public InvisibleWall(int _x, int _y, int w, int h, boolean horizontal) {
         x = _x;
 		y = _y;
 		width = w;
 		height = h;
 
-        this.hztl = hztl;
+        this.horizontal = horizontal;
 	}
 
 	public Point getPosition() {
@@ -29,7 +30,7 @@ public class InvisibleWall implements MoveBlocker, GameEntity {
         return (new Rectangle(x, y, width, height));
 	}
 
-    public boolean isHztl() {
-        return hztl;
+    public boolean isHorizontal() {
+        return horizontal;
     }
 }

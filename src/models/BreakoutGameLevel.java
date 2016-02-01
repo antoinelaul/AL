@@ -1,7 +1,7 @@
 package models;
 
 
-import controllers.BallMoveBlockerApplier;
+import controllers.BreakoutBallMoveBlockerApplier;
 import controllers.BreakoutBallDriver;
 import controllers.BreakoutOverlapRules;
 import entities.*;
@@ -63,7 +63,7 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
     protected void init() {
         OverlapProcessor overlapProcessor = new OverlapProcessorDefaultImpl();
         MoveBlockerChecker moveBlockerChecker = new MoveBlockerCheckerDefaultImpl();
-        moveBlockerChecker.setMoveBlockerRules(new BallMoveBlockerApplier());
+        moveBlockerChecker.setMoveBlockerRules(new BreakoutBallMoveBlockerApplier());
 
         BreakoutOverlapRules overlapRules =
                 new BreakoutOverlapRules(canvas, life[0], score[0], endOfGame, observablePlayer, observableBall);
@@ -104,7 +104,6 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
 
         universe.addGameEntity(new EndLine(0, HEIGHT, WIDTH, 10));      // For ball and bonus.
         universe.addGameEntity(new EndLine(0, -20, WIDTH, 10));      // For bullets.
-
 
 
         // Player configuration.

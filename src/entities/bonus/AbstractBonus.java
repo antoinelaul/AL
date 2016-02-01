@@ -13,8 +13,9 @@ abstract public class AbstractBonus extends GameMovable implements Drawable, Gam
     protected DrawableImage image;
     private int size;
 
+
     public AbstractBonus(Canvas canvas, int size) {
-        image = new DrawableImage(getImage(), canvas);
+        this.image = new DrawableImage(getImage(), canvas);
         this.size = size;
     }
 

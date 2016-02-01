@@ -23,8 +23,9 @@ public class BreakoutBallDriver extends GameMovableDriverDefaultImpl {
         SpeedVector possibleSpeedVector;
 
         // No many strategies to test.
-        if (strategies == null)
+        if (strategies == null) {
             return super.getSpeedVector(m);
+        }
 
         // Try every stored strategy, and apply the first one possible.
         for (MoveStrategy str: strategies) {

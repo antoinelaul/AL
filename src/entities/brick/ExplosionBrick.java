@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class ExplosionBrick extends BreakableBrick {
     public ExplosionBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
-        super(defaultCanvas, x, y, width, height);
+        super(defaultCanvas, x, y, width, height, "assets/images/explosion_brick.png");
     }
 
     @Override

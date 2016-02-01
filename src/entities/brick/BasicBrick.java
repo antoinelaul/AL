@@ -4,8 +4,8 @@ import java.awt.*;
 
 public class BasicBrick extends BreakableBrick {
 
-	public BasicBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
-        super(defaultCanvas, x, y, width, height);
+    public BasicBrick(Canvas canvas, int x, int y, int width, int height) {
+        super(canvas, x, y, width, height, "assets/images/basic_brick.png");
     }
 
     @Override

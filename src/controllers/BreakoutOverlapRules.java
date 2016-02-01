@@ -301,8 +301,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
      */
     public void overlapRule(Ball ball, EndLine line) {
         // Strategy change.
-        BreakoutBallDriver driver = (BreakoutBallDriver) ball.getDriver();
-        driver.setStrategy(new MoveStrategyLine(2, -1));
+        ((BreakoutBallDriver) ball.getDriver()).setStrategy(new MoveStrategyLine(2, -1));
 
         // Put the ball just above the player.
         Player player = observablePlayer.getValue();
