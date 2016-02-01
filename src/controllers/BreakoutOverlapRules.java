@@ -57,13 +57,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
     @Override
     public void applyOverlapRules(Vector<Overlap> overlappables) {
         Player p = observablePlayer.getValue();
-        Ball b = observableBall.getValue();
         if (p.isFiring()) playerFire(p);
-        if (!b.isStillOnFire()) {
-            b.changeImage(canvas);
-            b.setOffFire();
-        }
-
         super.applyOverlapRules(overlappables);
     }
 

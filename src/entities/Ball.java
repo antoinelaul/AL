@@ -14,10 +14,12 @@ public class Ball extends GameMovable implements Drawable, GameEntity, Overlappa
     private boolean onFire = false;
     private int timeOnFire = 0;
     private int size;
+    private Canvas canvas;
 
 
     public Ball(Canvas canvas, int size) {
         image = new DrawableImage("assets/images/ball.png", canvas);
+        this.canvas = canvas;
         this.size = size;
     }
 
@@ -30,6 +32,10 @@ public class Ball extends GameMovable implements Drawable, GameEntity, Overlappa
     @Override
     public void oneStepMoveAddedBehavior() {
         timeOnFire--;
+        if(timeOnFire <= 0) {
+            changeImage(this.canvas);
+            setOffFire();
+        }
     }
 
     @Override
