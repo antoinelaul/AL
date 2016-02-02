@@ -1,4 +1,4 @@
-package entities;
+package entities.movables;
 
 import gameframework.base.Drawable;
 import gameframework.base.DrawableImage;
@@ -11,7 +11,6 @@ import java.awt.*;
 public class Ball extends GameMovable implements Drawable, GameEntity, Overlappable {
     protected static DrawableImage image;
 
-    private boolean onFire = false;
     private int timeOnFire = 0;
     private int size;
     private Canvas canvas;
@@ -33,11 +32,6 @@ public class Ball extends GameMovable implements Drawable, GameEntity, Overlappa
     public void oneStepMoveAddedBehavior() {
         timeOnFire--;
         if (timeOnFire == 0) changeImage();
-
-        /* if(timeOnFire <= 0) {    // Here, the image is re affected every time... not so good for performances.
-            changeImage();
-            setOffFire();
-        } */
     }
 
     @Override
@@ -59,15 +53,7 @@ public class Ball extends GameMovable implements Drawable, GameEntity, Overlappa
     /**
      * Methods about ball fire state
      */
-    // public void setOnFire(){ this.onFire = true;}
-    // public void setOffFire(){ this.onFire = false;}
-
-    /* public boolean isStillOnFire() {
-        return timeOnFire > 0;
-    } */
-
     public boolean isOnFire(){
-        // return this.onFire;
         return timeOnFire > 0;
     }
 

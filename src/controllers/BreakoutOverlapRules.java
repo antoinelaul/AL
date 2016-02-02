@@ -3,10 +3,13 @@ package controllers;
 import entities.*;
 import entities.Image;
 import entities.bonus.*;
-import entities.brick.BasicBrick;
-import entities.brick.BonusBrick;
-import entities.brick.BreakableBrick;
-import entities.brick.ExplosionBrick;
+import entities.bricks.BasicBrick;
+import entities.bricks.BonusBrick;
+import entities.bricks.BreakableBrick;
+import entities.bricks.ExplosionBrick;
+import entities.movables.Ball;
+import entities.movables.Bullet;
+import entities.movables.Player;
 import gameframework.base.ObservableValue;
 import gameframework.base.Overlap;
 import gameframework.base.SpeedVector;
@@ -171,7 +174,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
 
 
     /**
-     * Collision between ball and brick handling.
+     * Collision between ball and bricks handling.
      */
     public void overlapRule(Ball ball, BreakableBrick brick) {
         Point ballPosition = ball.getPosition();
@@ -382,7 +385,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         Rectangle bonusBoundingBox = bonus.getBoundingBox();
 
         bonus.setPosition(new Point(
-                brickPosition.x + (bbb.width - bonusBoundingBox.width) / 2,     // Center explosion according the brick.
+                brickPosition.x + (bbb.width - bonusBoundingBox.width) / 2,     // Center explosion according the bricks.
                 brickPosition.y + (bbb.height - bonusBoundingBox.height) / 2));
         universe.addGameEntity(bonus);
     }

@@ -1,4 +1,4 @@
-package entities.brick;
+package entities.bricks;
 
 import java.awt.*;
 
@@ -6,7 +6,7 @@ import java.awt.*;
 public class BonusBrick extends BreakableBrick {
 
     public BonusBrick(Canvas defaultCanvas, int x, int y, int width, int height) {
-        super(defaultCanvas, x, y, width, height, "assets/images/bonus_brick.png");
+        super(defaultCanvas, x, y, width, height);
     }
 
     @Override

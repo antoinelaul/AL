@@ -1,4 +1,4 @@
-package entities;
+package entities.movables;
 
 import gameframework.base.Drawable;
 import gameframework.base.DrawableImage;
@@ -9,14 +9,16 @@ import gameframework.game.GameMovable;
 import java.awt.*;
 
 
-public class Bullet extends GameMovable implements Drawable, GameEntity, Overlappable {
-    private DrawableImage image;
+public class Player extends GameMovable implements Drawable, GameEntity, Overlappable {
+    protected static DrawableImage image;
+
     private int width;
     private int height;
+    private int timeBullet = 0;
 
 
-    public Bullet(Canvas canvas, int width, int height) {
-        image = new DrawableImage("assets/images/bullet.png", canvas);
+    public Player(Canvas canvas, int width, int height) {
+        image = new DrawableImage("assets/images/player.png", canvas);
         this.width = width;
         this.height = height;
     }
@@ -28,12 +30,20 @@ public class Bullet extends GameMovable implements Drawable, GameEntity, Overlap
     }
 
     @Override
-    public void oneStepMoveAddedBehavior() {
-
+    public Rectangle getBoundingBox() {
+        return new Rectangle(0, 0, width, height);
     }
 
     @Override
-    public Rectangle getBoundingBox() {
-        return new Rectangle(0, 0, width, height);
+    public void oneStepMoveAddedBehavior() {
+        timeBullet--;
+    }
+
+    public void setTimeBullet(int time) {
+        timeBullet = time;
+    }
+
+    public boolean isFiring() {
+        return timeBullet > 0;
     }
 }

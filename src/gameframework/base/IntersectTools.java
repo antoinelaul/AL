@@ -23,12 +23,12 @@ public class IntersectTools {
 	 */
 	public static Shape getIntersectShape(Movable movable,
 			SpeedVector speedVector) {
-		// Compute the intersection shape using the movable properties
+		// Compute the intersection shape using the movables properties
 		int dX = (int) speedVector.getDirection().getX();
 		int dY = (int) speedVector.getDirection().getY();
 		int v = speedVector.getSpeed();
 
-		// We need the bounding box of the movable
+		// We need the bounding box of the movables
 		int x1 = (int) movable.getPosition().getX();
 		int y1 = (int) movable.getPosition().getY();
 		int x2 = x1 + (int) movable.getBoundingBox().getWidth();

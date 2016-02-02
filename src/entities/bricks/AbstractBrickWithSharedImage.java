@@ -1,4 +1,4 @@
-package entities.brick;
+package entities.bricks;
 
 import gameframework.base.Drawable;
 import gameframework.base.DrawableImage;
@@ -8,10 +8,9 @@ import java.awt.*;
 import java.util.ArrayList;
 
 
-public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
-    private DrawableImage image;
+public class AbstractBrickWithSharedImage implements Drawable, GameEntity, Cloneable {
 
-    // Just an optimization to shared brick images according given paths.
+    // Just an optimization to shared bricks images according given paths.
     private static class Asset {
         public String path;
         public DrawableImage image;
@@ -46,6 +45,7 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
         }
     }
 
+
     private static AssetCollection assets = new AssetCollection();
 
     Point pos;
@@ -54,17 +54,9 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
     private int indexAsset = -1;
 
 
-    public AbstractBrick(Canvas canvas, int x, int y, int width, int height, String filename) {
+    public AbstractBrickWithSharedImage(Canvas canvas, int x, int y, int width, int height, String filename) {
         this.indexAsset = assets.add(filename, canvas);
 
-        this.pos = new Point(x, y);
-        this.width = width;
-        this.height = height;
-    }
-
-    // Here, images are not shared.
-    public AbstractBrick(Canvas canvas, int x, int y, int width, int height) {
-        this.image = new DrawableImage(getImage(), canvas);
         this.pos = new Point(x, y);
         this.width = width;
         this.height = height;
@@ -73,7 +65,6 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
     @Override
     public void draw(Graphics g) {
         g.drawImage(assets.get(indexAsset).getImage(), pos.x, pos.y, width, height, null);
-        // g.drawImage(image.getImage(), pos.x, pos.y, width, height, null);
     }
 
     public Rectangle getBoundingBox() {
@@ -105,6 +96,4 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
     public int getHeight() {
         return this.height;
     }
-
-    public abstract String getImage();
 }

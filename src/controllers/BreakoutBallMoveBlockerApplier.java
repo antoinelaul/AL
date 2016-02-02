@@ -1,9 +1,9 @@
 package controllers;
 
-import entities.Ball;
+import entities.movables.Ball;
 import entities.Blocker;
 import entities.InvisibleWall;
-import entities.brick.UnbreakableBrick;
+import entities.bricks.UnbreakableBrick;
 import gameframework.base.MoveStrategy;
 import gameframework.game.*;
 import models.MoveStrategyLine;

@@ -5,7 +5,9 @@ import controllers.BreakoutBallMoveBlockerApplier;
 import controllers.BreakoutBallDriver;
 import controllers.BreakoutOverlapRules;
 import entities.*;
-import entities.brick.*;
+import entities.bricks.*;
+import entities.movables.Ball;
+import entities.movables.Player;
 import gameframework.base.ObservableValue;
 import gameframework.game.*;
 
@@ -78,7 +80,7 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
 
         int totalBreakableWalls = 0;
 
-        // Filling up the universe with basic non movable entities and inclusion in the universe
+        // Filling up the universe with basic non movables entities and inclusion in the universe
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                  if (values[i][j] != 0) {

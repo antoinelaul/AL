@@ -12,7 +12,7 @@ public class OverlapProcessorDefaultImpl implements OverlapProcessor {
 
 	/**
 	 * These two lists contain all overlappables for which we want to compute
-	 * overlaps. We distinguish between movable and non-movable because two
+	 * overlaps. We distinguish between movables and non-movables because two
 	 * non-movables never overlap.
 	 */
 	private ConcurrentLinkedQueue<Overlappable> overlappablesNonMovable;
