@@ -6,6 +6,7 @@ import gameframework.game.Game;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -90,17 +91,14 @@ public class BreakoutGame implements Game, Observer {
         Menu file = new Menu("File");
         MenuItem start = new MenuItem("New");
         MenuItem quit = new MenuItem("Quit");
-        // Menu game = new Menu("Game");
-        // MenuItem pause = new MenuItem("Pause");
-        // MenuItem resume = new MenuItem("Resume");
+        MenuItem load = new MenuItem("Load");
 
         menuBar.add(file);
-        // menuBar.add(game);
         frame.setMenuBar(menuBar);
 
         start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                reset();
+                reset(gameLevelDefinitions);
             }
         });
         quit.addActionListener(new ActionListener() {
@@ -108,23 +106,16 @@ public class BreakoutGame implements Game, Observer {
                 System.exit(0);
             }
         });
-        /* pause.addActionListener(new ActionListener() {
+        load.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                pause();
+                loadFromFile();
             }
         });
-        resume.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                resume();
-            }
-        }); */
 
         file.add(start);
+        file.add(load);
         file.add(quit);
-        // game.add(pause);
-        // game.add(resume);
     }
-
 
     private Container createStatusBar() {
         JPanel statusBar = new JPanel();
@@ -148,9 +139,8 @@ public class BreakoutGame implements Game, Observer {
         return statusBar;
     }
 
-
-    // Re-init every levels, according their definition.
-    private synchronized void reset() {
+    // Re-init every levels, according given definitions.
+    private synchronized void reset(String[] levelDefinitions) {
         levelNumber = 0;
 
         score[0].addObserver(this);
@@ -159,7 +149,7 @@ public class BreakoutGame implements Game, Observer {
         score[0].setValue(0);
 
         gameLevelQueue.clear();
-        for (String levelDefinition: gameLevelDefinitions) {
+        for (String levelDefinition: levelDefinitions) {
             try {
                 gameLevelQueue.add(new BreakoutGameLevel(this, levelDefinition));
             }
@@ -174,6 +164,16 @@ public class BreakoutGame implements Game, Observer {
         }
 
         notifyAll();        // Ok, there are new levels, loop can continue if it was stopped.
+    }
+
+    private void loadFromFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("TXT files", "txt"));
+
+        if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            reset(new String[] { file.getAbsolutePath() });
+        }
     }
 
     // Loop that launch threads.
@@ -199,8 +199,6 @@ public class BreakoutGame implements Game, Observer {
 
     @Override
     public void start() {
-        reset();            // Fill up thread list.
-
         try {
             loop();         // Launch loop that executes threads.
         }
