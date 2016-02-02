@@ -4,12 +4,15 @@ import gameframework.base.ObservableValue;
 import gameframework.game.CanvasDefaultImpl;
 import gameframework.game.Game;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Observable;
@@ -40,8 +43,8 @@ public class BreakoutGame implements Game, Observer {
 
 
     public BreakoutGame() {
-        life[0] = new ObservableValue<Integer>(0);
-        score[0] = new ObservableValue<Integer>(0);
+        life[0] = new ObservableValue<>(0);
+        score[0] = new ObservableValue<>(0);
 
         lifeText = new Label("Lives:");
         scoreText = new Label("Score:");
@@ -87,12 +90,12 @@ public class BreakoutGame implements Game, Observer {
         Menu file = new Menu("File");
         MenuItem start = new MenuItem("New");
         MenuItem quit = new MenuItem("Quit");
-        Menu game = new Menu("Game");
-        MenuItem pause = new MenuItem("Pause");
-        MenuItem resume = new MenuItem("Resume");
+        // Menu game = new Menu("Game");
+        // MenuItem pause = new MenuItem("Pause");
+        // MenuItem resume = new MenuItem("Resume");
 
         menuBar.add(file);
-        menuBar.add(game);
+        // menuBar.add(game);
         frame.setMenuBar(menuBar);
 
         start.addActionListener(new ActionListener() {
@@ -105,7 +108,7 @@ public class BreakoutGame implements Game, Observer {
                 System.exit(0);
             }
         });
-        pause.addActionListener(new ActionListener() {
+        /* pause.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 pause();
             }
@@ -114,12 +117,12 @@ public class BreakoutGame implements Game, Observer {
             public void actionPerformed(ActionEvent e) {
                 resume();
             }
-        });
+        }); */
 
         file.add(start);
         file.add(quit);
-        game.add(pause);
-        game.add(resume);
+        // game.add(pause);
+        // game.add(resume);
     }
 
 
@@ -180,7 +183,7 @@ public class BreakoutGame implements Game, Observer {
                 while (gameLevelQueue.isEmpty()) wait();    // If there is no level to launch, just wait.
             }
 
-            endOfGame = new ObservableValue<Boolean>(false);
+            endOfGame = new ObservableValue<>(false);
             endOfGame.addObserver(this);
 
             try {
@@ -254,6 +257,9 @@ public class BreakoutGame implements Game, Observer {
             if (endOfGame.getValue()) {
                 currentPlayedLevel.interrupt();
                 currentPlayedLevel.end();
+
+                if (gameLevelQueue.isEmpty())
+                    displayImage("Message for winners", "assets/images/win.png");
             }
         }
         else {
@@ -265,6 +271,7 @@ public class BreakoutGame implements Game, Observer {
                     if (lives == 0) {
                         currentPlayedLevel.interrupt();
                         currentPlayedLevel.end();
+                        displayImage("Message for losers", "assets/images/lose.png");
                     }
                 }
             }
@@ -275,5 +282,18 @@ public class BreakoutGame implements Game, Observer {
                             Integer.toString(((ObservableValue<Integer>) o).getValue()));
             }
         }
+    }
+
+    public void displayImage(String title, String filename) {
+        try {
+            BufferedImage image = ImageIO.read(new File(filename));
+            JDialog dialog = new JDialog(frame, title, true);
+
+            dialog.setLocationRelativeTo(frame);
+            dialog.add(new JLabel(new ImageIcon(image)));
+            dialog.pack();
+            dialog.setVisible(true);
+        }
+        catch (IOException e) { }
     }
 }

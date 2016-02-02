@@ -167,7 +167,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         overlapRule(player, (AbstractBonus) bonus);
 
         Point position = player.getPosition();
-        entities.Image image = new Image(canvas, "assets/images/mysterious.png",
+        Image image = new Image(canvas, "assets/images/mysterious.png",
                 0, position.y - 150, 150, 150);
         universe.addGameEntity(image);
     }
@@ -211,7 +211,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         System.out.println("" + brickRightDownCorner + " / " + ballLeftMiddle + " / " + brickRightUpCorner);
         System.out.println();
 
-        if(!ball.isOnFire()) {
+        if(!ball.isOnFire()) {      // Maybe put this if before all the calculus to avoid useless computation.
             if(((brickLeftDownCorner.x <= ballUpMiddle.x) &&
                     (ballUpMiddle.x <= brickRightDownCorner.x )) ||
                     ((brickLeftUpCorner.x <= ballDownMiddle.x) &&
@@ -248,13 +248,6 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         overlapRule(ball, (BreakableBrick) brick);
         explosionHandler(brick);
     }
-
-    // Avoid infinite display of explosion.
-    public void overlapRule(Ball ball, ExplosionBonus bonus) {
-        universe.removeGameEntity(bonus);
-    }
-
-
 
 
     /**
@@ -354,12 +347,17 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
      * End game handling.
      */
     private void wallBrokenHandler(BreakableBrick brick) {
-        score.setValue(score.getValue() + brick.getValue());
-        universe.removeGameEntity(brick);
-        wallBroken++;
+        // Several entities can break a brick at same time. And we want to count once each brick as broken.
+        if (!brick.isBroken()) {
+            score.setValue(score.getValue() + brick.getValue());
+            universe.removeGameEntity(brick);
 
-        if (wallBroken >= totalBreakableWalls)
-            endOfGame.setValue(true);
+            brick.broke();
+            wallBroken++;
+
+            if (wallBroken >= totalBreakableWalls)
+                endOfGame.setValue(true);
+        }
     }
 
 
@@ -381,12 +379,17 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
     private void explosionHandler(BreakableBrick brick) {
         Point brickPosition = brick.getPosition();
         AbstractBonus bonus = new ExplosionBonus(canvas, SPRITE_SIZE * (6 + rand.nextInt(4)));      // Random size.
-        Rectangle bbb = brick.getBoundingBox();
+        Rectangle brickBoundingBox = brick.getBoundingBox();
         Rectangle bonusBoundingBox = bonus.getBoundingBox();
 
         bonus.setPosition(new Point(
-                brickPosition.x + (bbb.width - bonusBoundingBox.width) / 2,     // Center explosion according the bricks.
-                brickPosition.y + (bbb.height - bonusBoundingBox.height) / 2));
+                brickPosition.x + (brickBoundingBox.width - bonusBoundingBox.width) / 2,   // Center explosion according the bricks.
+                brickPosition.y + (brickBoundingBox.height - bonusBoundingBox.height) / 2));
+
+        universe.addGameEntity(new BasicBrick(              // To trigger explosion.
+                canvas, brickPosition.x, brickPosition.y,
+                SPRITE_SIZE * 2, SPRITE_SIZE));
+        totalBreakableWalls++;
         universe.addGameEntity(bonus);
     }
 

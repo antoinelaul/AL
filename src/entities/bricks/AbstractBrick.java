@@ -12,6 +12,8 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
     Point pos;
     private int width;
     private int height;
+    private boolean broken = false;
+
 
     public AbstractBrick(Canvas canvas, int x, int y, int width, int height) {
         this.image = new DrawableImage(getImage(), canvas);
@@ -53,6 +55,14 @@ public abstract class AbstractBrick implements Drawable, GameEntity, Cloneable {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public boolean isBroken() {
+        return broken;
+    }
+
+    public void broke() {   // Ok, it's not english, but 'break' was already taken.
+        broken = true;
     }
 
     public abstract String getImage();
