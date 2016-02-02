@@ -141,12 +141,6 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         overlapRule(player, (AbstractBonus) bonus);
 
         Ball ball = observableBall.getValue();
-        // It works without this code
-        // Point direction = ball.getSpeedVector().getDirection();
-        // MoveStrategyLine ballStr = new MoveStrategyLine(direction.x, direction.y);
-        // GameMovableDriverDefaultImpl ballDriver = (GameMovableDriverDefaultImpl) ball.getDriver();
-        // ballDriver.setStrategy(ballStr);
-        // ball.setOnFire();
         ball.setTimeFire(100);
         ball.changeImage();
     }
@@ -185,7 +179,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         Point direction = ball.getSpeedVector().getDirection();
         MoveStrategyLine ballStr = new MoveStrategyLine(direction.x, direction.y);
 
-        //Brick position
+        //Brick corners position
         Point brickLeftUpCorner = brickPosition;
         Point brickLeftDownCorner = new Point(brickPosition.x, brickPosition.y + brick.getHeight());
         Point brickRightUpCorner = new Point(brickPosition.x + brick.getWidth(), brickPosition.y);
@@ -194,7 +188,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
                 brickPosition.y + brick.getHeight()
         );
 
-        //Ball position
+        //Ball hit points position
         int sizeBall = ball.getSize();
         Point ballUpMiddle = new Point(ballPosition.x + sizeBall/2, ballPosition.y);
         Point ballDownMiddle = new Point(ballPosition.x + sizeBall/2, ballPosition.y + sizeBall);
