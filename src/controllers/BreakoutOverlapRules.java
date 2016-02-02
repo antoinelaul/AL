@@ -182,48 +182,46 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
         Point direction = ball.getSpeedVector().getDirection();
         MoveStrategyLine ballStr = new MoveStrategyLine(direction.x, direction.y);
 
-        //Brick corners position
-        Point brickLeftUpCorner = brickPosition;
-        Point brickLeftDownCorner = new Point(brickPosition.x, brickPosition.y + brick.getHeight());
-        Point brickRightUpCorner = new Point(brickPosition.x + brick.getWidth(), brickPosition.y);
-        Point brickRightDownCorner = new Point(
-                brickPosition.x + brick.getWidth(),
-                brickPosition.y + brick.getHeight()
-        );
+        if(!ball.isOnFire()) {
+            //Brick corners position
+            Point brickLeftUpCorner = brickPosition;
+            Point brickLeftDownCorner = new Point(brickPosition.x, brickPosition.y + brick.getHeight());
+            Point brickRightUpCorner = new Point(brickPosition.x + brick.getWidth(), brickPosition.y);
+            Point brickRightDownCorner = new Point(
+                    brickPosition.x + brick.getWidth(),
+                    brickPosition.y + brick.getHeight()
+            );
 
-        //Ball hit points position
-        int sizeBall = ball.getSize();
-        Point ballUpMiddle = new Point(ballPosition.x + sizeBall/2, ballPosition.y);
-        Point ballDownMiddle = new Point(ballPosition.x + sizeBall/2, ballPosition.y + sizeBall);
-        Point ballRightMiddle = new Point(ballPosition.x + sizeBall, ballPosition.y + sizeBall/2);
-        Point ballLeftMiddle = new Point(ballPosition.x, ballPosition.y + sizeBall/2);
+            //Ball hit points position
+            int sizeBall = ball.getSize();
+            Point ballUpMiddle = new Point(ballPosition.x + sizeBall/2, ballPosition.y);
+            Point ballDownMiddle = new Point(ballPosition.x + sizeBall/2, ballPosition.y + sizeBall);
+            Point ballRightMiddle = new Point(ballPosition.x + sizeBall, ballPosition.y + sizeBall/2);
+            Point ballLeftMiddle = new Point(ballPosition.x, ballPosition.y + sizeBall/2);
 
-        //Sout to understrand the behavior
-        System.out.println("FUCKING HIT BITCH");
-        System.out.println();
-        System.out.println("leDo/up/riDo");
-        System.out.println("" + brickLeftDownCorner + " / " + ballUpMiddle + " / " + brickRightDownCorner);
-        System.out.println("leUp/down/riUp");
-        System.out.println("" + brickLeftUpCorner + " / " + ballDownMiddle + " / " + brickRightUpCorner);
-        System.out.println("leUp/right/leDo");
-        System.out.println("" + brickLeftUpCorner + " / " + ballRightMiddle + " / " + brickLeftDownCorner);
-        System.out.println("riDo/left/riUp");
-        System.out.println("" + brickRightDownCorner + " / " + ballLeftMiddle + " / " + brickRightUpCorner);
-        System.out.println();
 
-        if(!ball.isOnFire()) {      // Maybe put this if before all the calculus to avoid useless computation.
-            if(((brickLeftDownCorner.x <= ballUpMiddle.x) &&
-                    (ballUpMiddle.x <= brickRightDownCorner.x )) ||
-                    ((brickLeftUpCorner.x <= ballDownMiddle.x) &&
-                            (ballDownMiddle.x <= brickRightUpCorner.x))
-                    ){
+            if((ballDownMiddle.x < brickLeftDownCorner.x) &&
+                    (brickLeftDownCorner.x < ballUpMiddle.x) &&
+                    (ballUpMiddle.x < brickRightDownCorner.x )) {
                 ballStr = new MoveStrategyLine(direction.x, -direction.y);
             }
-            else if(((brickLeftUpCorner.y <= ballRightMiddle.y) &&
-                    (ballRightMiddle.y <= brickLeftDownCorner.y)) ||
-                    ((brickRightUpCorner.y <= ballLeftMiddle.y) &&
-                            (ballLeftMiddle.y <= brickRightDownCorner.y))
-                    ){
+
+            else if((ballUpMiddle.x > brickLeftUpCorner.x) &&
+                            (brickLeftUpCorner.x < ballDownMiddle.x) &&
+                            (ballDownMiddle.x < brickRightUpCorner.x)){
+                ballStr = new MoveStrategyLine(direction.x, -direction.y);
+            }
+
+            else if((ballLeftMiddle.y < brickLeftUpCorner.y) &&
+                    (brickLeftUpCorner.y < ballRightMiddle.y) &&
+                            (ballRightMiddle.y < brickLeftDownCorner.y)){
+                ballStr = new MoveStrategyLine(-direction.x, direction.y);
+
+            }
+
+            else if((ballRightMiddle.y > brickRightUpCorner.y) &&
+                    (brickRightUpCorner.y < ballLeftMiddle.y) &&
+                            (ballLeftMiddle.y < brickRightDownCorner.y)){
                 ballStr = new MoveStrategyLine(-direction.x, direction.y);
             }
         }
@@ -233,6 +231,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
 
         wallBrokenHandler(brick);
     }
+
 
     public void overlapRule(Ball ball, BasicBrick brick) {
         overlapRule(ball, (BreakableBrick) brick);
@@ -396,7 +395,7 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
 
     private int randomBonus() {
         int alea = rand.nextInt(100);
-        System.out.println(alea);
+        //System.out.println(alea);
 
         if (alea <= 75) return rand.nextInt(3); // 75% of time, a normal bonus (bomb, weapon, fireball.
         else if (alea <= 98) return 3;          // Life bonus.
