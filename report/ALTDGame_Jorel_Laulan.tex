@@ -18,24 +18,6 @@
 % \usepackage{xcolor}
 
 
-%\lstset{
-%language=Java,
-%basicstyle=\normalsize,
-%upquote=true,
-%aboveskip={1.5\baselineskip},
-%columns=fullflexible,
-%showstringspaces=false,
-%extendedchars=true,
-%breaklines=true,
-%showtabs=false,
-%showspaces=false,
-%showstringspaces=false,
-%identifierstyle=\ttfamily,
-%keywordstyle=\color[rgb]{0,0,1},
-%commentstyle=\color[rgb]{0.133,0.545,0.133},
-%stringstyle=\color[rgb]{0.627,0.126,0.941},
-%}
-
 \geometry{top=3cm, bottom=3cm, left=2cm, right=2cm}
 
 \title{Rapport\\Architecture Logicielle\\Jeu 2D autour d'un framework\\Année 2015/2016 }
@@ -107,18 +89,17 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
                     et ceci dans un rayon de taille aléatoire.
         \end{itemize}
 
-        Lorsque toutes les briques sont cassées, le niveau est terminé. Toutes les briques cassables
+        Lorsque toutes les briques sont cassées, le niveau est terminé. Toutes les briques destructibles
         ne nécessitent qu'un seul coup pour être détruites.
 
     \subsubsection{Les bonus}
-        Afin de varier un peu le jeu et de coller un peu plus à l'esprit d'un Breakout nous avons intégrer la possibilité au joueur
+        Afin de varier un peu le jeu et de coller un peu plus à l'esprit d'un Breakout nous avons donné la possibilité au joueur
         d'utiliser des bonus. Ceux-ci ont uniquement un effet "positif" sur la parite du joueur. Voici la liste des bonus mis
         à la disposition du joueur :
         \begin{itemize}
             \item \textbf{Vie} : représenté par un coeur, caractérisé par le rajout d'une vie supplémentaire,
             \item \textbf{Mitraillette} : représenté par un pistolet et caractérisé par le tir d'une salve (limitée dans le temps)
-            de balles depuis
-            la palette du joueur en direction des briques,
+            de balles depuis la palette du joueur en direction des briques,
             \item \textbf{Bombes} : représenté par une bombe. Ce bonus à pour effet de transformer une brique restante
             en brique explosive et de la faire exploser. L'explosion a le comportement d'une brique explosive classique.
             \item \textbf{Fireball} : représenté par une boule de feu. Il provoque un changement d'état temporaire de la balle (\textit{fireball})
@@ -128,21 +109,27 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
         Chacun de ces bonus est associé à une probabilité, ainsi  par exemple le bonus de vie supplémentaire a moins
         de chance d'apparaître que les autres, car le nombre de vies est un élément cruxial à prendre
         en compte, et que nous ne souhaitons pas que le jeu soit trop facile, cela va de soit.
-        Nous proposerons également au joueur l'achat de futurs DLC pour obtenir de nouveaux bonus encore plus dévastateurs..
 
     \subsubsection{Gestion des parties}
-        Il est toujours agréable de pouvoir recommencer une partie, sans etre obligé de relancer un
+       
+       	\paragraph{New.} Il est toujours agréable de pouvoir recommencer une partie, sans etre obligé de relancer un
         programme. Pour cela, la fonctionnalité \textit{new (game)} a été apportée, en plus de la
         possibilité de quitter. Cependant, il est impossible de suspendre une partie et de la reprendre.
-        Il faut donc que vous soyez vraiment sûr de ne pas être dérangé et de n'avoir rien besoin de faire pendant vos parties \\
+        Il faut donc que vous soyez vraiment sûr de ne pas être dérangé et de n'avoir rien besoin de faire pendant vos parties. \\
 
-        Lorsque le joueur perd le jeu ou le gagne, il en est informé par un message approprié. Cependant, le jeu démarre
-        directement sans attente et la transition entre niveau est direct. Soyez concentré car il faudra
+		\paragraph{Load.} L'utilisateur à la possiblité de charger ses propres niveaux de jeu. Des détails sur cette fonctionnalité
+		seront apportés dans la partie implémentation.	
+		
+        \paragraph{Enchainement des niveaux. } Lorsque le joueur perd le jeu ou le gagne, il en est informé par un message approprié. Cependant, le jeu démarre
+        directement sans attente et la transition entre niveau est directe. Soyez concentré car il faudra
         se resituer très vite lorsqu'un niveau sera terminé et que le suivant apparaîtra.
 
+	\subsubsection{Fonctionnalités futures}
+		Comme tout jeu récent nous proposerons des DLC payants (contenu téléchargeable) aux utilisateurs. Ils auront pour but
+		d'augmenter le nombre de type de brique et d'ajouter de nouveaux bonus encore plus dévastateurs..
 
 \subsection{Architecture}
-    Un bon jeu implique une bonne architecture. L'inverse est moins évident...
+    Un bon jeu implique une bonne architecture. L'inverse est quant à lui moins évident...
 	Nous allons dans cette partie vous présenter l'architecture logicielle de notre jeu. Ceci sera fait à l'aide de
 	diagrammes de classes.
 	Nous mettrons en évidence les connexions entre nos classes et les classes du framework.
@@ -188,7 +175,8 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
     parler de son implémentation et donc du travail qui a été effectué.
 
     \subsubsection{Les niveaux}
-        Afin de ne pas avoir à écrire statiquement la configuration des briques d'un niveau, nous avons
+    
+        \paragraph{Description. }Afin de ne pas avoir à écrire statiquement la configuration des briques d'un niveau, nous avons
         utilisé des fichiers externes, au format \textit{.txt}, pour le faire. Chaque type de brique est représentée par un numéro.
         Théoriquement, il est possible d'avoir un nombre de brique en largeur et en hauteur aussi grand qu'on le souhaite.
         Il faut préciser cela dans au début du fichier de description, mais pour des raisons de jouabilité, il
@@ -198,12 +186,14 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
         Pour éviter d'instancier chaque brique une à une, nous nous sommes servis du \textit{design pattern prototype},
         permettant d'avoir les briques de bases dans un tableau et ensuite de les cloner en fonction du
         fichier de description.
+        
+        \paragraph{Load.} %
 
     \subsubsection{Stratégies de déplacement}
         Les stratégies permettent de définir comment un objet va se déplacer. Pour notre jeu, nous n'avons eu besoin
         que de deux stratégies  : celle du joueur et celle des autres entités. \\ Les autres entités
         se déplacent verticalement, vers le bas pour les bonus et vers le haut pour les balles de pistolet. La balle, quant
-        à elle décrit plutôt des diagonales. Mais toutes ces entités se déplacent en ligne droite.
+        à elle décrit plutôt des diagonales. Mais toutes ces entités se déplacent en décrivant des lignes droites.
         Le joueur quant à lui bouge suivant l'action de l'utilisateur sur le clavier. Son déplacement est uniquement horizontal.
 
     \subsubsection{Fenêtre de jeu}
@@ -218,8 +208,8 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
         la fin du jeu, le \textit{thread} courant est arrêté, pour pouvoir repartir sur un jeu ``neuf''. \\
 
         C'est également la fenetre de jeu qui gère les messages de fin de partie. Elle les affiche à l'utilisateur
-        l'informant de sa réussite ou de son échec dans une fenetre de dialogue. Pour recommencer une partie, il
-        est nécessaire de fermer cette fenetre additionnelle.
+        l'informant de sa réussite ou de son échec dans une fenêtre de dialogue. Pour recommencer une partie, il
+        est nécessaire de fermer cette fenêtre additionnelle.
 
     \subsubsection{Les rebonds}
         Une mauvaise impression sur les rebonds peut rebuter quelque peu l'utilisateur. Nous approfondirons
@@ -235,7 +225,7 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
             Les murs et les briques indestructibles sont des \textit{blockers}, c'est-à-dire que le système calcule avant de
             déplacer les entités mobiles (comme la balle) si ces dernières rentrent en collision avec les \textit{blockers}.
             Et si c'est le cas, l'entité ne sera pas déplacée. Ceci pose un problème lorsque la balle est trop rapide. En
-            effet, le système considérera qu'une entité ne pourra etre déplacée, alors qu'en raison de sa grande vitesse,
+            effet, le système considérera qu'une entité ne pourra être déplacée, alors qu'en raison de sa grande vitesse,
             elle ne sera pas collée à un mur ou une brique incassable. Pour rémédier au problème, il suffit de vérifier si
             la balle est effectivement collée ou pas, et ensuite calculer le point de collision si besoin.
             Comme nous ne modifions la vitesse que sur l'axe des abscisses, ce calcul n'est pas effectué sur celui des
@@ -249,7 +239,24 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
 		quand la balle rencontre une brique et quand elle doit modifier sa trajectoire.
 
 		\subparagraph{Calcul du point de collision.}
-			% j'ai pas encore rempli cette partie car je risque de modifier ça
+		Les briques sont représentées par des rectangles et la balle par un carré.
+		Afin de trouver le bon point de collision et ainsi faire la bonne modification de trajectoire nous avons procédé comme expliqué dans la liste 
+		suivante : 
+		\begin{itemize}
+		\item calcul de la position de la brique à l'aide des quatre points qui la représente,
+		\item calcul des points de collision de la balle, à savoir le milieu de chacun des côtés du carré qui contient la balle,
+		\item comparaison des positions entre les côté du rectangle et les points de collisions de la balle,
+		\item si un point de collision dépasse le côté correspondant du rectangle, la trajectoire est changée.
+		\end{itemize}
+		Les correspondances sont les suivantes : 
+		\begin{itemize}
+		\item le haut de la balle avec le côté bas du rectangle,
+		\item le bas de la balle avec le côté haut du rectangle,
+		\item la gauche de la balle avec le côté droit du rectangle,
+		\item la droite de la balle avec le côté gauche du rectangle.
+		\end{itemize}
+		Cependant cette approche a apporté quelques problèmes de collisions justement. Nous approfondirons ce point
+		dans la partie dédiée aux difficultés rencontrées.
 
         En ce qui concerne les murs, nous ne faisons qu'inverser la vitesse sur l'axe des ordonnées ou des abscisses suivant
         que le mur rencontré est horizontal ou non.
@@ -262,13 +269,13 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
 
         Nous souhaitions alléger la mémoire utilisée par les briques. En effet, chaque brique a sa propre image, or
         il n'y a que quatre type de briques. C'est pourquoi nous avons pensé à stocker ces quatres images dans un
-        tableau statique. Lors qu'une brique doit etre affiché, elle ne fait que préciser l'indice de l'image
+        tableau statique. Lors qu'une brique doit être affichée, elle ne fait que préciser l'indice de l'image
         dans le tableau statique. Mais le gain n'était pas assez important pour justifier la mise en place de
-        ce système assez lourd et peu lisibible. Cependant, nous avons gardé la classe, car elle pourrait etre
-        utilisée si jamais les images des briques devenait vraiment très lourdes.
+        ce système assez lourd et peu lisibible. Cependant, nous avons gardé la classe, car elle pourrait être
+        utilisée si jamais les images des briques devenaient vraiment très lourdes.
 
     \subsubsection{Bonus}
-        Les bonus n'ont pas été la partie la plus dure à implémenter et penser, bien qu'elle nous a demandé un peu
+        Les bonus n'ont pas été la partie la plus dure à implémenter et penser, bien qu'elle nous ait demandé un peu
         d'imagination. Le plus dur a finalement été de comprendre bien le \textit{framework} pour savoir
         comment arriver à nos fins. \\
 
@@ -281,35 +288,43 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
                 pour le mettre en place.
 
             \item \textbf{Mitraillette :}
-                Peut-etre celui qui a demandé le plus de recherche pour etre mis en place, les salves sont tirées
-                si le joueur est toujours sous l'effet. l'effet de ce bonus est appliqué avant que les entités
+                Peut-être celui qui a demandé le plus de recherche pour être mis en place, les salves sont tirées
+                si le joueur est toujours sous l'effet du bonus. Cet effet est appliqué avant que les entités
                 vérifient qu'elles se touchent.
 
             \item \textbf{Bombes :}
-                Pour cette effet, il a d'abord fallu récupérer toutes les entités présente dans le jeu et trier
+                Pour cet effet, il a d'abord fallu récupérer toutes les entités présentes dans le jeu et trier
                 pour ne garder que les briques cassables. Ensuite, une brique est tirée aléatoirement pour exploser.
 
             \item \textbf{Fireball :}
                 Ce bonus n'impose plus de contraintes sur la balle. Il est mis en place en vérifiant que le joueur
-                est toujours sous l'effet et en n'appliquant pas le changement de direction de la balle.
+                est toujours sous l'effet du bonys et en n'appliquant pas le changement de direction de la balle.
         \end{itemize}
 
 
 
 \subsection{Limites du jeu et difficultés rencontrées}
 
-% Il faut réorganiser/structurer cette partie
 
 Même les grands jeux ont des limites, prenez par exemple \textit{Assassin's Creed Unity}... quoique dans ce cas,
 il s'agisse plutôt de bugs. \\
 
+\paragraph{Les collisions.}
 La gestion des collisions n'a pas été chose simple, aussi il est assez remarquable par moment que la balle
 ne rebondit pas comme souhaité. Cela vient principalement du \textit{framework} qui permet difficilement d'avoir
 conscience du contexte de la balle. De plus, ce dernier permet que la balle touche plusieurs briques à la fois,
 ce qui peut entraîner des comportements inattendus, vu que la trajectoire de la balle est modifiée plusieurs fois. \\
+Rentre également en ligne de compte la vitesse de la balle. C'est à dire que si la balle est trop rapide alors durant
+le temps qui s'écoule entre deux laps, la balle s'est déplacée à "l'interieur" d'une brique. En d'autres termes les
+deux \textit{overlappables} se chevauchent un peu trop. Et par conséquent, plusieurs
+points de collision de la balle ont dépassé leur côté. De ce fait c'est l'ordre des \textit{if} et \textit{else if} qui dicte
+le choix de la nouvelle trajectoire à prendre pour la balle. Or il peut arriver que ce choix soit erroné par rapport à la
+trajectoire initiale de la balle.\\
+Concrètement les rebonds sur le dessus et sur le dessous des briques sont à peu près corrects tandis que ceux sur 
+les côtés droit et gauche sont faussés. En inversant l'ordre des \textit{if} / \textit{else if} il est possible de rendre
+ces rebonds cohérents mais cela a pour conséquence de fausser ceux du dessus / dessous..
 
-% Je vais rajouter des choses la dessus
-
+\paragraph{Les images d'explosion.}
 Pour des raisons qui nous échappent également, l'image des explosions ne disparaît pas certaines fois. Il est possible
 que ce soit dû à des problèmes de collisions multiples d'une brique avec une bombe et une autre élément du jeu (les
 balles tirées par exemple).
