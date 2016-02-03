@@ -1,10 +1,11 @@
 package models;
 
 
-import controllers.BreakoutBallMoveBlockerApplier;
 import controllers.BreakoutBallDriver;
+import controllers.BreakoutBallMoveBlockerApplier;
 import controllers.BreakoutOverlapRules;
-import entities.*;
+import entities.EndLine;
+import entities.InvisibleWall;
 import entities.bricks.*;
 import entities.movables.Ball;
 import entities.movables.Player;
@@ -12,8 +13,8 @@ import gameframework.base.ObservableValue;
 import gameframework.game.*;
 
 import java.awt.*;
-import java.io.*;
-import java.util.Iterator;
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -84,17 +85,22 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
         // Filling up the universe with basic non movables entities and inclusion in the universe
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                 if (values[i][j] != 0) {
-                    AbstractBrick brick = bricks[values[i][j] - 1].clone();
+                try {
+                    if (values[i][j] != 0) {
+                        AbstractBrick brick = bricks[values[i][j] - 1].clone();
 
-                    if (values[i][j] > 1)               // Brick 1 is Unbreakable.
-                        totalBreakableWalls++;
+                        if (values[i][j] > 1)               // Brick 1 is Unbreakable.
+                            totalBreakableWalls++;
 
-                    brick.setPosition(new Point(
-                            (2 * j  + SPRITE_OFFSET_X) * SPRITE_SIZE,           // x
-                            (i      + SPRITE_OFFSET_Y) * SPRITE_SIZE));         // y
+                        brick.setPosition(new Point(
+                                (2 * j + SPRITE_OFFSET_X) * SPRITE_SIZE,           // x
+                                (i + SPRITE_OFFSET_Y) * SPRITE_SIZE));         // y
 
-                    universe.addGameEntity(brick);
+                        universe.addGameEntity(brick);
+                    }
+                }
+                catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Unknown brick identifier: " + values[i][j]);
                 }
             }
         }

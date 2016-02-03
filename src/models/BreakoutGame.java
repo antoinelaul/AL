@@ -15,6 +15,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayDeque;
 import java.util.Observable;
 import java.util.Observer;
@@ -58,13 +59,12 @@ public class BreakoutGame implements Game, Observer {
     public void createGUI() {
         frame = new Frame("Firewall Breaker");
         canvas = new CanvasDefaultImpl();
+        JButton startButton = new JButton("New game");
 
         createMenuBar();
-
         canvas.setSize(WIDTH, HEIGHT);
+        frame.add(createStatusBar(), BorderLayout.SOUTH);
         frame.add(canvas);
-        Container sb = createStatusBar();
-        frame.add(sb, BorderLayout.SOUTH);
 
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -172,7 +172,7 @@ public class BreakoutGame implements Game, Observer {
 
         if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            reset(new String[] { file.getAbsolutePath() });
+            reset(new String[]{file.getAbsolutePath()});
         }
     }
 
@@ -199,6 +199,8 @@ public class BreakoutGame implements Game, Observer {
 
     @Override
     public void start() {
+        reset(gameLevelDefinitions);
+
         try {
             loop();         // Launch loop that executes threads.
         }

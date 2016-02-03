@@ -14,6 +14,6 @@ public class UnbreakableBrick extends AbstractBrick implements MoveBlocker, Bloc
 
 	@Override
 	public String getImage() {
-		return "assets/images/wall.gif";
+		return "assets/images/wall.png";
 	}
 }

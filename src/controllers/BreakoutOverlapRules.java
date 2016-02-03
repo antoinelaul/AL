@@ -395,7 +395,6 @@ public class BreakoutOverlapRules extends OverlapRulesApplierDefaultImpl {
 
     private int randomBonus() {
         int alea = rand.nextInt(100);
-        //System.out.println(alea);
 
         if (alea <= 75) return rand.nextInt(3); // 75% of time, a normal bonus (bomb, weapon, fireball.
         else if (alea <= 98) return 3;          // Life bonus.
