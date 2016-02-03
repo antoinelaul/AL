@@ -119,7 +119,7 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
         possibilité de quitter. Cependant, il est impossible de suspendre une partie et de la reprendre.
         Il faut donc que vous soyez vraiment sûr de ne pas être dérangé et de n'avoir rien besoin de faire pendant vos parties.
 
-		\paragraph{Charger un niveau.} L'utilisateur à la possiblité de charger ses propres niveaux de jeu. Des détails sur
+		\paragraph{Charger un niveau.} L'utilisateur a la possiblité de charger ses propres niveaux de jeu. Des détails sur
 		cette fonctionnalité seront apportés dans la partie dédiée à l'implémentation.
 
         \paragraph{Enchainement des niveaux. } Lorsque le joueur perd le jeu ou le gagne, il en est informé par un message approprié. Cependant, le jeu démarre
@@ -190,14 +190,14 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
         fichier de description.
 
         \paragraph{Fichiers de description.}
-        Comme expliqué dans les fonctionnalités, il est possible de charger ces propres niveaux. Pour cela, il suffit
+        Comme expliqué dans les fonctionnalités, il est possible de charger ses propres niveaux. Pour cela, il suffit
         d'écrire un fichier de description, comme ceux qui sont utilisés pour les niveaux pré-définis. \\
         Un fichier de description commence par la valeur du nombre de briques en largeur, puis celle en hauteur (16 16
         en général). Ensuite, il suffit de préciser les identifiants des briques dans l'ordre souhaité. Ces identifiants
         sont :
         \begin{itemize}
             \item $0$ pour une espace vide,
-            \item $1$ pour une brique indestructibles,
+            \item $1$ pour une brique indestructible,
             \item $2$ pour une brique normale,
             \item $3$ pour une brique de bonus,
             \item $4$ pour une brique explosive.
@@ -213,9 +213,8 @@ a détruit toutes les briques qui peuvent l'être, ou lorsque celui-ci n'a plus 
 
     \subsubsection{Fenêtre de jeu}
         En s'inspirant de l'exemple d'utilisateur du \textit{framework}, nous avons créé une fenêtre de jeu semblable,
-        mais évidemment plus appropriée au jeu de \textit{Breakout}. \\
-%         La possibilité de recommencer une partie et de la quitter
-%         font parties des deux seules fonctionnalités de la fenêtre d'affichage. \\
+        mais évidemment plus appropriée au jeu de \textit{Breakout}. \\ \\
+
 
         Afin de gérer la fonction \textit{new}, nous avons remanié l'exemple donné pour lui permettre de fonctionner
         correctement. Nous gérons les niveaux dans une file de \textit{threads} qui attendent d'être lancés. Lorsque la file
@@ -345,7 +344,7 @@ En d'autres termes, les
 deux \textit{overlappables} se chevauchent un peu trop. Et par conséquent, plusieurs
 points de collision de la balle ont dépassé leur côté. De ce fait, c'est l'ordre des \textit{if} et \textit{else if} qui dicte
 le choix de la nouvelle trajectoire à prendre pour la balle. Or il peut arriver que ce choix soit erroné par rapport à la
-trajectoire initiale de la balle.\\
+trajectoire initiale de la balle.\\ \\ \\
 Concrètement les rebonds sur le dessus et sur le dessous des briques sont à peu près corrects tandis que ceux sur
 les côtés droit et gauche sont faussés. En inversant l'ordre des \textit{if} / \textit{else if} il est possible de rendre
 ces rebonds cohérents mais cela a pour conséquence de fausser ceux du dessus / dessous. \\
