@@ -271,6 +271,7 @@ public class BreakoutGame implements Game, Observer {
                     if (lives == 0) {
                         currentPlayedLevel.interrupt();
                         currentPlayedLevel.end();
+                        gameLevelQueue.clear();
                         displayImage("Message for losers", "assets/images/lose.png");
                     }
                 }
