@@ -77,7 +77,8 @@ public class BreakoutGameLevel extends GameLevelDefaultImpl {
         universe = new GameUniverseDefaultImpl(moveBlockerChecker, overlapProcessor);
         overlapRules.setUniverse(universe);
 
-        gameBoard = new BreakoutUniverseViewPort(canvas, universe);
+        gameBoard = new GameUniverseViewPortDefaultImpl(canvas, universe);
+        ((GameUniverseViewPortDefaultImpl) gameBoard).setBackground("assets/images/back.jpg");
         ((CanvasDefaultImpl) canvas).setDrawingGameBoard(gameBoard);
 
         int totalBreakableWalls = 0;
