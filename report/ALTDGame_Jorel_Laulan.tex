@@ -376,12 +376,12 @@ balles tirées par exemple). Ceci dit, le problème semble n'apparaître que tr�
         qui nous intéressent, mais n'oublions pas que les performances en patissent. De plus, cette technique est
         utilisée à deux endroits dans le code, et cela est appliqué à chaque itération du jeu (\textit{lap}).
 
-    \subsection{Image de fond}
-        Pour créer un niveau, il est nécessaire d'avoir un \textit{viewport}, ce que le système fournit. Ce qui est
-        par contre assez difficile à comprendre, c'est pourquoi la classe gérant \textit{viewport} par défaut
-        comporte une méthode qui permet de modifier l'image de fond, alors que finalement la méthode permettant de connaître
-        cette image ne fait que renvoyer une chemin vers un fichier ? Et cela écrit en dur en plus ! Conclusion, une classe
-        fille seulement à cause d'une méthode qui fait un travail assez inattendu.
+%    \subsection{Image de fond}
+%        Pour créer un niveau, il est nécessaire d'avoir un \textit{viewport}, ce que le système fournit. Ce qui est
+%        par contre assez difficile à comprendre, c'est pourquoi la classe gérant \textit{viewport} par défaut
+%        comporte une méthode qui permet de modifier l'image de fond, alors que finalement la méthode permettant de connaître
+%        cette image ne fait que renvoyer une chemin vers un fichier ? Et cela écrit en dur en plus ! Conclusion, une classe
+%        fille seulement à cause d'une méthode qui fait un travail assez inattendu.
 
     \subsection{Gestion des niveaux}
         Pourquoi avoir géré les niveaux comme des threads ? Bonne question. Une fois qu'ils sont lancés il est impossible de les
